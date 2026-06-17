@@ -3,768 +3,804 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Tamagosol – Raise Your Crypto Pet</title>
+<title>Tamagosol — Raise Your Crypto Pet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,800;0,900;1,800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#FF6B00">
+<meta property="og:title" content="Tamagosol — Raise Your Crypto Pet">
+<meta property="og:description" content="Hatch, raise, and evolve your crypto pet. Earn $SOGO.">
 <style>
-  /* ========== RESET & BASE ========== */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ================================================================
+   GLOBAL
+================================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --gold:#FFC93C;--gold2:#FFD23F;--gold-dark:#E5A800;--gold-glow:rgba(255,201,60,0.45);
+  --cyan:#22D3EE;--coral:#FF4D6D;
+  --sun1:#FF8C00;--sun2:#FF5500;--bg-bot:#6B0F00;
+  --white:#FFFFFF;--ink:#111111;
+  --card-r:22px;--ease-b:cubic-bezier(.34,1.56,.64,1);--ease-s:cubic-bezier(.4,0,.2,1);
+  --shadow:0 6px 24px rgba(0,0,0,.22);
+}
+html,body{height:100%;font-family:'Space Grotesk',sans-serif;overflow-x:hidden;color:var(--ink)}
+body{
+  background:linear-gradient(170deg,var(--sun1) 0%,#E03000 50%,var(--bg-bot) 100%);
+  background-attachment:fixed;min-height:100dvh;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='104'%3E%3Cpath d='M30 72L0 54V18L30 0l30 18v36zm0-8l24-14V22L30 8 6 22v28z' fill='%23fff' fill-opacity='.035'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;
+}
 
-  :root {
-    --gold: #FFC93C;
-    --gold-dark: #E5A800;
-    --cyan: #22D3EE;
-    --coral: #FF4D6D;
-    --bg-top: #FF8C00;
-    --bg-bot: #8B1A1A;
-    --white: #FFFFFF;
-    --shadow: rgba(0,0,0,0.18);
-    --card-radius: 20px;
-    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  }
+/* ================================================================
+   LAYOUT SHELL
+================================================================ */
+#app{position:relative;z-index:1;max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column}
 
-  html, body {
-    height: 100%;
-    font-family: 'Nunito Sans', sans-serif;
-    background: linear-gradient(160deg, var(--bg-top) 0%, #CC3300 55%, var(--bg-bot) 100%);
-    background-attachment: fixed;
-    min-height: 100vh;
-    overflow-x: hidden;
-    color: #222;
-  }
+/* ================================================================
+   SCREEN MANAGER
+================================================================ */
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .4s var(--ease-s),transform .4s var(--ease-s)}
+.screen.hidden{opacity:0;pointer-events:none;transform:scale(.96) translateY(10px)}
 
-  /* Hex pattern background */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34zm0-6l22-13V19L28 6 6 19v28z' fill='%23ffffff' fill-opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-  }
+/* ================================================================
+   ██ INTRO SCREEN
+================================================================ */
+#screen-intro{
+  background:linear-gradient(170deg,#FF7700 0%,#CC2200 55%,#4A0800 100%);
+  z-index:100;
+}
+.intro-inner{display:flex;flex-direction:column;align-items:center;gap:0;padding:40px 24px}
 
-  /* ========== LAYOUT ========== */
-  #app {
-    position: relative;
-    z-index: 1;
-    max-width: 480px;
-    margin: 0 auto;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    padding: 12px 14px 18px;
-  }
+/* — THE LOGO — */
+.logo-wrap{position:relative;display:flex;flex-direction:column;align-items:center;margin-bottom:24px}
 
-  /* ========== CARD ========== */
-  .card {
-    background: #fff;
-    border: 2.5px solid #111;
-    border-radius: var(--card-radius);
-    box-shadow: 0 4px 18px var(--shadow), 0 1px 3px rgba(0,0,0,0.1);
-    padding: 14px 16px;
-  }
+.logo-emblem{
+  width:130px;height:130px;position:relative;
+  animation:emblem-float 3s ease-in-out infinite;
+}
+@keyframes emblem-float{
+  0%,100%{transform:translateY(0) rotate(-1deg)}
+  50%{transform:translateY(-10px) rotate(1deg)}
+}
+.logo-emblem svg{filter:drop-shadow(0 14px 36px rgba(0,0,0,.5))}
 
-  /* ========== TOP BAR ========== */
-  #topbar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 10px;
-  }
+.logo-text{
+  margin-top:16px;
+  font-family:'Nunito',sans-serif;font-weight:900;
+  font-size:38px;letter-spacing:-0.5px;
+  display:flex;align-items:baseline;gap:0;
+  filter:drop-shadow(0 3px 12px rgba(0,0,0,.4));
+}
+.logo-tamago{color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.3)}
+.logo-sol{
+  background:linear-gradient(135deg,#FFD23F 0%,#FF8C00 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-style:italic;
+}
+.logo-tagline{
+  margin-top:6px;
+  color:rgba(255,255,255,.55);
+  font-size:13px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+}
 
-  #sound-btn {
-    width: 42px; height: 42px;
-    border-radius: 50%;
-    border: 2.5px solid #111;
-    background: #fff;
-    box-shadow: 0 2px 8px var(--shadow);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    font-size: 20px;
-    transition: transform 0.15s var(--ease-bounce), box-shadow 0.15s;
-    flex-shrink: 0;
-  }
-  #sound-btn:active { transform: scale(0.88); }
+/* intro glow rings */
+.glow-ring{
+  position:absolute;border-radius:50%;border:1.5px solid rgba(255,200,60,.25);
+  animation:ring-expand 3s ease-in-out infinite;
+}
+.glow-ring:nth-child(1){width:160px;height:160px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.glow-ring:nth-child(2){width:210px;height:210px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:.5s}
+.glow-ring:nth-child(3){width:260px;height:260px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1s}
+@keyframes ring-expand{
+  0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}
+  50%{opacity:.15;transform:translate(-50%,-50%) scale(1.08)}
+}
 
-  #stats-card {
-    flex: 1;
-    padding: 10px 14px;
-  }
+/* progress bar */
+.intro-loader{
+  width:160px;height:4px;background:rgba(255,255,255,.15);
+  border-radius:99px;overflow:hidden;margin-top:40px;
+}
+.intro-loader-fill{
+  height:100%;background:linear-gradient(90deg,#FFD23F,#FF8C00);
+  border-radius:99px;width:0%;
+  transition:width .1s linear;
+}
+.intro-skip{
+  margin-top:20px;color:rgba(255,255,255,.4);font-size:12px;
+  font-weight:600;letter-spacing:.1em;cursor:pointer;
+}
+.intro-skip:active{color:rgba(255,255,255,.7)}
 
-  .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px 12px;
-  }
+/* ================================================================
+   ██ AUTH SCREEN
+================================================================ */
+#screen-auth{
+  background:linear-gradient(170deg,#FF7700 0%,#CC2200 55%,#4A0800 100%);
+  padding:0 16px;z-index:50;
+  justify-content:flex-start;padding-top:48px;
+}
+.auth-logo-mini{
+  display:flex;flex-direction:column;align-items:center;margin-bottom:28px;flex-shrink:0;
+}
+.auth-logo-mini .logo-text{font-size:26px;margin-top:8px}
 
-  .stat-row {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
+.auth-card{
+  width:100%;max-width:420px;
+  background:#fff;border:2.5px solid #111;border-radius:28px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
 
-  .stat-label {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #666;
-    display: flex;
-    justify-content: space-between;
-  }
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr}
+.auth-tab{
+  padding:16px 10px;text-align:center;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;
+  cursor:pointer;border-bottom:3px solid transparent;
+  color:#999;transition:color .2s,border-color .2s,background .2s;
+  user-select:none;
+}
+.auth-tab.active{color:#111;border-color:var(--gold);background:#FFFCF0}
 
-  .stat-bar-bg {
-    height: 8px;
-    background: #eee;
-    border-radius: 99px;
-    overflow: hidden;
-    border: 1.5px solid #ddd;
-  }
+.auth-form{padding:24px 22px 28px;display:flex;flex-direction:column;gap:14px}
 
-  .stat-bar-fill {
-    height: 100%;
-    border-radius: 99px;
-    transition: width 0.5s var(--ease-smooth);
-  }
-  .stat-bar-fill.hunger  { background: linear-gradient(90deg, #FF8C00, #FFD23F); }
-  .stat-bar-fill.energy  { background: linear-gradient(90deg, #22D3EE, #818CF8); }
-  .stat-bar-fill.mood    { background: linear-gradient(90deg, #FF4D6D, #F472B6); }
-  .stat-bar-fill.hashpow { background: linear-gradient(90deg, #10B981, #22D3EE); }
+.field-wrap{display:flex;flex-direction:column;gap:5px}
+.field-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#777}
+.field-input{
+  height:48px;border:2px solid #e5e5e5;border-radius:12px;
+  padding:0 14px;font-size:15px;font-family:'Space Grotesk',sans-serif;font-weight:500;
+  color:#111;background:#fafafa;outline:none;
+  transition:border-color .2s,box-shadow .2s,background .2s;
+}
+.field-input:focus{border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px var(--gold-glow)}
+.field-input::placeholder{color:#bbb}
 
-  /* ========== SOGO PILL ========== */
-  #sogo-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: #fff;
-    border: 2.5px solid #111;
-    border-radius: 99px;
-    padding: 6px 14px 6px 10px;
-    box-shadow: 0 2px 8px var(--shadow);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
+.auth-submit{
+  height:52px;border-radius:14px;border:2.5px solid #111;
+  background:linear-gradient(135deg,#FF8C00,#FF5500);
+  color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;
+  cursor:pointer;box-shadow:0 4px 0 #111;
+  transition:transform .1s var(--ease-b),box-shadow .1s;
+  margin-top:4px;
+}
+.auth-submit:active{transform:translateY(3px);box-shadow:0 1px 0 #111}
+.auth-submit:disabled{opacity:.6;cursor:wait}
 
-  #sogo-icon { font-size: 18px; line-height: 1; }
-  #sogo-amount {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 15px;
-    color: #111;
-    transition: color 0.3s;
-  }
-  #sogo-label { font-size: 11px; font-weight: 700; color: #999; }
+.auth-error{
+  font-size:13px;color:#DC2626;font-weight:600;
+  background:#FEF2F2;border:1.5px solid #FECACA;
+  border-radius:10px;padding:10px 14px;display:none;
+}
+.auth-error.visible{display:block}
 
-  /* ========== CREATURE STAGE ========== */
-  #creature-stage {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    min-height: 240px;
-    padding: 20px 0;
-  }
+.auth-divider{
+  text-align:center;font-size:12px;color:#bbb;font-weight:600;
+  position:relative;
+}
+.auth-divider::before,.auth-divider::after{
+  content:'';position:absolute;top:50%;width:38%;height:1px;background:#eee;
+}
+.auth-divider::before{left:0}.auth-divider::after{right:0}
 
-  #creature-wrap {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-  }
+/* ================================================================
+   ██ GAME SCREEN
+================================================================ */
+#screen-game{
+  z-index:10;padding:0;position:relative;
+  display:flex;flex-direction:column;
+  min-height:100dvh;
+}
 
-  #creature-name-tag {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 13px;
-    color: #fff;
-    background: rgba(0,0,0,0.35);
-    border-radius: 99px;
-    padding: 3px 14px;
-    margin-bottom: 8px;
-    letter-spacing: 0.05em;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
-  }
+/* — NAV BAR — */
+#navbar{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 14px 0;flex-shrink:0;
+}
+.nav-user{
+  display:flex;align-items:center;gap:8px;flex:1;
+  background:rgba(0,0,0,.25);border:1.5px solid rgba(255,255,255,.18);
+  border-radius:99px;padding:6px 14px 6px 8px;
+  backdrop-filter:blur(8px);
+}
+.nav-avatar{
+  width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,#FFD23F,#FF8C00);
+  border:2px solid rgba(255,255,255,.4);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+.nav-username{
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;
+  color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px;
+}
+.nav-logout{
+  width:34px;height:34px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.3);background:rgba(0,0,0,.2);
+  color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .15s,transform .15s var(--ease-b);
+  flex-shrink:0;backdrop-filter:blur(8px);
+}
+.nav-logout:active{transform:scale(.85);background:rgba(255,0,0,.3)}
+.nav-sound{
+  width:34px;height:34px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.3);background:rgba(0,0,0,.2);
+  color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:background .15s,transform .15s var(--ease-b);
+  flex-shrink:0;backdrop-filter:blur(8px);
+}
+.nav-sound:active{transform:scale(.85)}
 
-  #creature-svg-wrap {
-    filter: drop-shadow(0 10px 28px rgba(0,0,0,0.35));
-    animation: idle-bob 2.8s ease-in-out infinite;
-  }
+/* SOGO pill */
+#sogo-pill{
+  display:flex;align-items:center;gap:6px;flex-shrink:0;
+  background:rgba(0,0,0,.25);border:1.5px solid rgba(255,201,60,.4);
+  border-radius:99px;padding:6px 14px 6px 10px;
+  backdrop-filter:blur(8px);
+}
+.sogo-coin{font-size:16px;line-height:1}
+#sogo-amount{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;color:#FFD23F;
+  text-shadow:0 1px 6px rgba(255,200,60,.5);
+  min-width:32px;text-align:right;
+}
+.sogo-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.5)}
 
-  @keyframes idle-bob {
-    0%, 100% { transform: translateY(0) rotate(-1deg); }
-    50%       { transform: translateY(-12px) rotate(1deg); }
-  }
+/* — STATS BAR — */
+#stats-card{
+  margin:10px 14px 0;
+  background:rgba(255,255,255,.97);
+  border:2.5px solid #111;border-radius:var(--card-r);
+  box-shadow:var(--shadow);
+  padding:12px 16px;
+}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+.stat-row{display:flex;flex-direction:column;gap:3px}
+.stat-head{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#888;
+}
+.stat-val{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:12px;color:#111;
+  transition:color .3s;
+}
+.stat-val.danger{color:#DC2626}
+.stat-bar-bg{
+  height:9px;background:#F3F4F6;border-radius:99px;overflow:hidden;
+  border:1.5px solid #e5e7eb;
+}
+.stat-bar-fill{
+  height:100%;border-radius:99px;transition:width .5s var(--ease-s),filter .3s;
+}
+.stat-bar-fill.hunger {background:linear-gradient(90deg,#FF8C00,#FFD23F)}
+.stat-bar-fill.energy {background:linear-gradient(90deg,#818CF8,#22D3EE)}
+.stat-bar-fill.mood   {background:linear-gradient(90deg,#FF4D6D,#F472B6)}
+.stat-bar-fill.hashpow{background:linear-gradient(90deg,#10B981,#22D3EE)}
+.stat-bar-fill.low    {filter:saturate(1.5)}
 
-  /* ========== EGG ========== */
-  .egg-svg {
-    animation: egg-idle 1.8s ease-in-out infinite;
-  }
-  @keyframes egg-idle {
-    0%, 100% { transform: rotate(-4deg) scale(1); }
-    50%       { transform: rotate(4deg) scale(1.04); }
-  }
+/* — CREATURE STAGE — */
+#creature-stage{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;padding:10px 0;min-height:200px;
+}
+#creature-wrap{
+  position:relative;display:flex;flex-direction:column;align-items:center;
+  cursor:pointer;user-select:none;
+}
+#stage-bg-glow{
+  position:absolute;width:180px;height:80px;
+  background:radial-gradient(ellipse,rgba(255,200,60,.18) 0%,transparent 70%);
+  bottom:0;left:50%;transform:translateX(-50%);
+  pointer-events:none;
+}
+#creature-name-tag{
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;
+  color:#fff;background:rgba(0,0,0,.32);
+  border-radius:99px;padding:4px 16px;
+  margin-bottom:10px;letter-spacing:.04em;
+  text-shadow:0 1px 4px rgba(0,0,0,.4);
+  border:1.5px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(4px);
+}
+#creature-svg-wrap{
+  filter:drop-shadow(0 14px 32px rgba(0,0,0,.38));
+  animation:idle-bob 2.8s ease-in-out infinite;
+  will-change:transform;
+}
+@keyframes idle-bob{
+  0%,100%{transform:translateY(0) rotate(-1deg)}
+  50%{transform:translateY(-14px) rotate(1deg)}
+}
+.egg-idle{animation:egg-idle 1.8s ease-in-out infinite}
+@keyframes egg-idle{
+  0%,100%{transform:rotate(-4deg) scale(1)}
+  50%{transform:rotate(4deg) scale(1.05)}
+}
+#mood-emoji{font-size:30px;margin-top:8px;transition:transform .3s var(--ease-b)}
 
-  /* ========== FLOATING TEXTS ========== */
-  .float-text {
-    position: absolute;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 18px;
-    color: #FFC93C;
-    text-shadow: 0 2px 6px rgba(0,0,0,0.3), 0 0 12px rgba(255,200,60,0.6);
-    pointer-events: none;
-    animation: float-up 1.4s var(--ease-smooth) forwards;
-    z-index: 100;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 30%;
-    white-space: nowrap;
-  }
-  .float-text.stat-gain { color: #22D3EE; text-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+/* floating texts */
+.float-text{
+  position:absolute;pointer-events:none;z-index:100;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:19px;
+  left:50%;transform:translateX(-50%);top:30%;
+  animation:float-up 1.5s var(--ease-s) forwards;
+  white-space:nowrap;
+}
+.float-text.sogo{color:#FFD23F;text-shadow:0 2px 8px rgba(0,0,0,.35),0 0 16px rgba(255,200,60,.7)}
+.float-text.stat {color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.4)}
+@keyframes float-up{
+  0%  {opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+  60% {opacity:1;transform:translateX(-50%) translateY(-65px) scale(1.1)}
+  100%{opacity:0;transform:translateX(-50%) translateY(-110px) scale(.85)}
+}
 
-  @keyframes float-up {
-    0%   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-    60%  { opacity: 1; transform: translateX(-50%) translateY(-60px) scale(1.1); }
-    100% { opacity: 0; transform: translateX(-50%) translateY(-100px) scale(0.8); }
-  }
+/* tap ring */
+.tap-ring{
+  position:absolute;width:70px;height:70px;border-radius:50%;
+  border:3px solid var(--gold);top:50%;left:50%;
+  transform:translate(-50%,-50%) scale(0);pointer-events:none;
+  animation:ring-pulse .55s var(--ease-s) forwards;
+}
+@keyframes ring-pulse{
+  0%  {transform:translate(-50%,-50%) scale(0);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(2.5);opacity:0}
+}
 
-  /* ========== MOOD EMOJI ========== */
-  #mood-emoji {
-    font-size: 28px;
-    margin-top: 6px;
-    transition: transform 0.3s var(--ease-bounce);
-  }
+/* — STAKE INFO BAR — */
+#stake-bar{
+  margin:0 14px;display:none;
+  background:linear-gradient(135deg,#D1FAE5,#A7F3D0);
+  border:2px solid #10B981;border-radius:14px;
+  padding:9px 16px;font-size:12px;font-weight:700;color:#065F46;
+  text-align:center;animation:fade-slide-up .3s var(--ease-b);
+}
+#stake-bar.visible{display:block}
+@keyframes fade-slide-up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-  /* ========== EVOLUTION FLASH ========== */
-  #evo-overlay {
-    position: fixed;
-    inset: 0;
-    background: #fff;
-    z-index: 999;
-    pointer-events: none;
-    opacity: 0;
-    display: none;
-  }
-  #evo-overlay.flash {
-    display: block;
-    animation: evo-flash 1.8s var(--ease-smooth) forwards;
-  }
-  @keyframes evo-flash {
-    0%   { opacity: 0; }
-    10%  { opacity: 1; }
-    40%  { opacity: 1; }
-    100% { opacity: 0; }
-  }
+/* — ACTION BUTTONS — */
+#actions{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:10px;padding:10px 14px;
+}
+.action-btn{
+  background:#fff;border:2.5px solid #111;border-radius:20px;
+  box-shadow:0 4px 0 #111,var(--shadow);
+  padding:14px 10px 12px;display:flex;flex-direction:column;
+  align-items:center;gap:6px;cursor:pointer;
+  transition:transform .1s var(--ease-b),box-shadow .1s;
+  position:relative;overflow:hidden;min-height:82px;
+}
+.action-btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 0 0 #111,0 2px 10px rgba(0,0,0,.12)}
+.action-btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-icon{font-size:28px;line-height:1;transition:transform .2s var(--ease-b)}
+.action-btn:active:not(:disabled) .btn-icon{transform:scale(1.2)}
+.btn-label{font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;letter-spacing:.02em}
+.btn-cd{font-size:10px;font-weight:700;color:#aaa;position:absolute;bottom:7px;right:10px}
+.action-btn::after{
+  content:'';position:absolute;inset:0;background:var(--btn-col,#FF8C00);
+  opacity:0;transition:opacity .15s;border-radius:inherit;
+}
+.action-btn:active:not(:disabled)::after{opacity:.07}
+#btn-feed  {--btn-col:#FF8C00}
+#btn-play  {--btn-col:#22D3EE}
+#btn-stake {--btn-col:#10B981}
+#btn-clean {--btn-col:#818CF8}
+#btn-stake.staking{
+  background:linear-gradient(135deg,#D1FAE5,#A7F3D0);
+  border-color:#10B981;box-shadow:0 4px 0 #059669,0 4px 20px rgba(16,185,129,.3);
+}
 
-  /* Confetti container */
-  #confetti-container {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 200;
-    overflow: hidden;
-  }
+/* — BOTTOM ROW — */
+#bottom-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:0 14px 16px;
+}
+#age-badge{
+  background:rgba(255,255,255,.15);border-radius:99px;
+  padding:5px 14px;font-size:11px;font-weight:700;color:#fff;
+  text-shadow:0 1px 4px rgba(0,0,0,.3);letter-spacing:.04em;
+  border:1.5px solid rgba(255,255,255,.2);backdrop-filter:blur(4px);
+}
+.corner-btns{display:flex;gap:8px}
+.corner-btn{
+  width:36px;height:36px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.3);background:rgba(0,0,0,.2);
+  color:#fff;font-family:'Nunito',sans-serif;font-weight:900;font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;backdrop-filter:blur(6px);
+  transition:background .15s,transform .15s var(--ease-b);
+}
+.corner-btn:active{transform:scale(.85);background:rgba(255,255,255,.25)}
 
-  .confetti-piece {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 2px;
-    animation: confetti-fall 2s var(--ease-smooth) forwards;
-  }
-  @keyframes confetti-fall {
-    0%   { opacity: 1; transform: translateY(-20px) rotate(0deg); }
-    100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
-  }
+/* footer */
+#footer{text-align:center;padding:0 14px 12px;font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.1em;font-weight:700}
 
-  /* ========== ACTION BUTTONS ========== */
-  #actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 10px;
-  }
+/* ================================================================
+   OVERLAYS & EFFECTS
+================================================================ */
+#evo-overlay{
+  position:fixed;inset:0;background:#fff;z-index:999;pointer-events:none;opacity:0;display:none;
+}
+#evo-overlay.flash{display:block;animation:evo-flash 1.8s var(--ease-s) forwards}
+@keyframes evo-flash{0%{opacity:0}12%{opacity:1}45%{opacity:1}100%{opacity:0}}
 
-  .action-btn {
-    background: #fff;
-    border: 2.5px solid #111;
-    border-radius: 18px;
-    box-shadow: 0 4px 0 #111, 0 4px 14px var(--shadow);
-    padding: 14px 10px 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    transition: transform 0.1s var(--ease-bounce), box-shadow 0.1s;
-    user-select: none;
-    position: relative;
-    overflow: hidden;
-    min-height: 80px;
-    -webkit-tap-highlight-color: transparent;
-  }
+#confetti-container{position:fixed;inset:0;pointer-events:none;z-index:200;overflow:hidden}
+.confetti-piece{
+  position:absolute;border-radius:2px;
+  animation:confetti-fall linear forwards;
+}
+@keyframes confetti-fall{
+  0%  {opacity:1;transform:translateY(-20px) rotate(0)}
+  100%{opacity:0;transform:translateY(110vh) rotate(720deg)}
+}
 
-  .action-btn:active:not(:disabled) {
-    transform: translateY(3px);
-    box-shadow: 0 1px 0 #111, 0 2px 8px var(--shadow);
-  }
+/* ================================================================
+   MODALS
+================================================================ */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;
+  display:flex;align-items:flex-end;justify-content:center;
+  padding:0 14px 14px;animation:bd-in .25s var(--ease-s);
+  backdrop-filter:blur(5px);
+}
+@keyframes bd-in{from{opacity:0}to{opacity:1}}
+.modal-sheet{
+  background:#fff;border:2.5px solid #111;border-radius:28px 28px 22px 22px;
+  width:100%;max-width:460px;max-height:82vh;overflow-y:auto;
+  padding:26px 22px 32px;animation:sheet-up .38s var(--ease-b);position:relative;
+}
+@keyframes sheet-up{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-close{
+  position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;
+  border:2px solid #e5e5e5;background:#f5f5f5;font-size:18px;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:#666;
+  transition:background .15s,transform .15s var(--ease-b);
+}
+.modal-close:active{transform:scale(.85);background:#e5e5e5}
+.modal-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:22px;margin-bottom:18px}
+.modal-step{display:flex;align-items:flex-start;gap:13px;margin-bottom:16px}
+.modal-icon{
+  width:42px;height:42px;border-radius:13px;
+  background:linear-gradient(135deg,var(--gold),var(--sun1));
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+  box-shadow:0 3px 10px rgba(255,140,0,.3);
+}
+.modal-step-text strong{display:block;font-weight:700;font-size:14px;margin-bottom:2px}
+.modal-step-text span{font-size:13px;color:#666;line-height:1.5}
 
-  .action-btn:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-  }
+/* ================================================================
+   ONBOARDING BUBBLE
+================================================================ */
+#onboarding{position:fixed;inset:0;z-index:600;display:flex;align-items:flex-end;justify-content:center;padding:0 14px 110px;pointer-events:none;display:none}
+.ob-bubble{
+  background:#fff;border:2.5px solid #111;border-radius:22px;
+  padding:18px 22px;max-width:360px;width:100%;
+  box-shadow:0 10px 36px rgba(0,0,0,.28);pointer-events:all;
+  animation:ob-pop .45s var(--ease-b);
+}
+@keyframes ob-pop{from{transform:scale(.8) translateY(40px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.ob-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;margin-bottom:6px}
+.ob-desc{font-size:13px;color:#555;margin-bottom:16px;line-height:1.55}
+.ob-footer{display:flex;justify-content:space-between;align-items:center}
+.ob-dots{display:flex;gap:6px}
+.ob-dot{width:7px;height:7px;border-radius:50%;background:#e5e5e5;transition:background .2s}
+.ob-dot.active{background:var(--sun1)}
+.ob-btns{display:flex;gap:8px}
+.ob-btn{
+  padding:8px 18px;border-radius:99px;border:2px solid #111;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:13px;cursor:pointer;
+  transition:transform .15s var(--ease-b);
+}
+.ob-btn:active{transform:scale(.9)}
+.ob-btn.primary{background:var(--sun1);color:#fff;border-color:#111}
+.ob-btn.skip{background:#f5f5f5;color:#888}
+.ob-highlight{animation:ob-glow 1.1s ease-in-out infinite}
+@keyframes ob-glow{
+  0%,100%{box-shadow:0 4px 0 #111,var(--shadow)}
+  50%{box-shadow:0 4px 0 #111,0 0 0 7px rgba(255,140,0,.4),var(--shadow)}
+}
 
-  .action-btn .btn-icon { font-size: 28px; line-height: 1; }
-  .action-btn .btn-label {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 13px;
-    letter-spacing: 0.02em;
-  }
+/* ================================================================
+   TOAST
+================================================================ */
+#toast{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);
+  background:#111;color:#fff;padding:10px 22px;border-radius:99px;
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;
+  box-shadow:0 6px 20px rgba(0,0,0,.35);z-index:800;
+  transition:transform .4s var(--ease-b),opacity .4s;pointer-events:none;
+  white-space:nowrap;opacity:0;
+}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
-  .action-btn .btn-cd {
-    font-size: 10px;
-    font-weight: 700;
-    color: #999;
-    position: absolute;
-    bottom: 6px;
-    right: 10px;
-  }
+/* ================================================================
+   DEATH SCREEN
+================================================================ */
+#death-screen{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:700;
+  align-items:center;justify-content:center;backdrop-filter:blur(10px);
+}
+#death-screen.visible{display:flex}
+.death-card{
+  background:#fff;border:2.5px solid #111;border-radius:30px;
+  padding:40px 30px;text-align:center;max-width:340px;width:90%;
+  animation:sheet-up .4s var(--ease-b);
+}
+.death-emoji{font-size:60px;margin-bottom:14px;display:block}
+.death-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:28px;margin-bottom:10px}
+.death-desc{font-size:14px;color:#666;margin-bottom:28px;line-height:1.55}
+.death-btn{
+  background:linear-gradient(135deg,#FF8C00,#FF4D6D);color:#fff;
+  border:2.5px solid #111;border-radius:16px;padding:15px 36px;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;
+  cursor:pointer;box-shadow:0 4px 0 #111;
+  transition:transform .1s var(--ease-b),box-shadow .1s;
+}
+.death-btn:active{transform:translateY(4px);box-shadow:0 0 0 #111}
 
-  /* Tap ring pulse */
-  .tap-ring {
-    position: absolute;
-    width: 60px; height: 60px;
-    border-radius: 50%;
-    border: 3px solid var(--gold);
-    top: 50%; left: 50%;
-    transform: translate(-50%,-50%) scale(0);
-    pointer-events: none;
-    animation: ring-pulse 0.5s var(--ease-smooth) forwards;
-  }
-  @keyframes ring-pulse {
-    0%   { transform: translate(-50%,-50%) scale(0); opacity: 1; }
-    100% { transform: translate(-50%,-50%) scale(2.2); opacity: 0; }
-  }
-
-  /* Btn colors */
-  #btn-feed   { --btn-accent: #FF8C00; }
-  #btn-play   { --btn-accent: #22D3EE; }
-  #btn-stake  { --btn-accent: #10B981; }
-  #btn-clean  { --btn-accent: #818CF8; }
-
-  .action-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--btn-accent, #FFC93C);
-    opacity: 0;
-    transition: opacity 0.15s;
-    border-radius: inherit;
-  }
-  .action-btn:active:not(:disabled)::before { opacity: 0.08; }
-
-  /* Stake active glow */
-  #btn-stake.staking {
-    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-    border-color: #10B981;
-    box-shadow: 0 4px 0 #059669, 0 4px 18px rgba(16,185,129,0.3);
-  }
-
-  /* ========== BOTTOM INFO ========== */
-  #bottom-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-  }
-
-  #age-badge {
-    background: rgba(255,255,255,0.2);
-    border-radius: 99px;
-    padding: 4px 12px;
-    font-size: 11px;
-    font-weight: 700;
-    color: #fff;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
-  }
-
-  #corner-btns { display: flex; gap: 8px; }
-
-  .corner-btn {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.5);
-    background: rgba(255,255,255,0.15);
-    color: #fff;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 16px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    backdrop-filter: blur(6px);
-    transition: background 0.15s, transform 0.15s var(--ease-bounce);
-    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
-  }
-  .corner-btn:active { transform: scale(0.88); background: rgba(255,255,255,0.3); }
-
-  /* ========== FOOTER ========== */
-  #footer {
-    text-align: center;
-    margin-top: 8px;
-    font-size: 10px;
-    color: rgba(255,255,255,0.45);
-    letter-spacing: 0.08em;
-    font-weight: 700;
-  }
-
-  /* ========== MODALS ========== */
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.55);
-    z-index: 500;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding: 0 14px 14px;
-    animation: backdrop-in 0.25s var(--ease-smooth);
-    backdrop-filter: blur(4px);
-  }
-  @keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
-
-  .modal-sheet {
-    background: #fff;
-    border: 2.5px solid #111;
-    border-radius: 28px 28px 20px 20px;
-    width: 100%;
-    max-width: 460px;
-    max-height: 80vh;
-    overflow-y: auto;
-    padding: 24px 20px 28px;
-    animation: sheet-up 0.35s var(--ease-bounce);
-    position: relative;
-  }
-  @keyframes sheet-up {
-    from { transform: translateY(100%); opacity: 0; }
-    to   { transform: translateY(0);    opacity: 1; }
-  }
-
-  .modal-close {
-    position: absolute;
-    top: 16px; right: 16px;
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    border: 2px solid #ddd;
-    background: #f5f5f5;
-    font-size: 18px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    color: #555;
-    transition: background 0.15s, transform 0.15s var(--ease-bounce);
-  }
-  .modal-close:active { transform: scale(0.85); background: #e5e5e5; }
-
-  .modal-title {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 22px;
-    margin-bottom: 16px;
-    color: #111;
-  }
-
-  .modal-step {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 14px;
-  }
-  .modal-step-icon {
-    width: 40px; height: 40px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #FFC93C, #FF8C00);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    flex-shrink: 0;
-  }
-  .modal-step-text strong { display: block; font-weight: 700; font-size: 14px; margin-bottom: 2px; }
-  .modal-step-text span { font-size: 13px; color: #555; }
-
-  /* ========== ONBOARDING ========== */
-  #onboarding {
-    position: fixed;
-    inset: 0;
-    z-index: 600;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding: 0 14px 100px;
-    pointer-events: none;
-  }
-
-  .ob-bubble {
-    background: #fff;
-    border: 2.5px solid #111;
-    border-radius: 20px;
-    padding: 16px 20px;
-    max-width: 340px;
-    width: 100%;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-    pointer-events: all;
-    animation: ob-pop 0.4s var(--ease-bounce);
-  }
-  @keyframes ob-pop {
-    from { transform: scale(0.8) translateY(40px); opacity: 0; }
-    to   { transform: scale(1) translateY(0);       opacity: 1; }
-  }
-
-  .ob-title {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 16px;
-    margin-bottom: 6px;
-  }
-  .ob-desc { font-size: 13px; color: #555; margin-bottom: 14px; line-height: 1.5; }
-  .ob-footer { display: flex; justify-content: space-between; align-items: center; }
-  .ob-dots { display: flex; gap: 5px; }
-  .ob-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: #ddd;
-    transition: background 0.2s;
-  }
-  .ob-dot.active { background: #FF8C00; }
-  .ob-btns { display: flex; gap: 8px; }
-  .ob-btn {
-    padding: 7px 16px;
-    border-radius: 99px;
-    border: 2px solid #111;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 13px;
-    cursor: pointer;
-    transition: transform 0.15s var(--ease-bounce);
-  }
-  .ob-btn:active { transform: scale(0.9); }
-  .ob-btn.primary { background: #FF8C00; color: #fff; border-color: #111; }
-  .ob-btn.skip    { background: #f5f5f5; color: #555; }
-
-  /* ========== HIGHLIGHT PULSE for onboarding ========== */
-  .ob-highlight {
-    animation: ob-highlight-pulse 1.2s ease-in-out infinite;
-  }
-  @keyframes ob-highlight-pulse {
-    0%, 100% { box-shadow: 0 4px 0 #111, 0 4px 14px rgba(255,140,0,0); }
-    50%       { box-shadow: 0 4px 0 #111, 0 0 0 6px rgba(255,140,0,0.45), 0 4px 20px rgba(255,140,0,0.3); }
-  }
-
-  /* ========== STAKE INFO BAR ========== */
-  #stake-info {
-    display: none;
-    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-    border: 2px solid #10B981;
-    border-radius: 14px;
-    padding: 8px 14px;
-    font-size: 12px;
-    font-weight: 700;
-    color: #065f46;
-    margin-top: 8px;
-    text-align: center;
-    animation: fade-in 0.3s;
-  }
-  #stake-info.visible { display: block; }
-  @keyframes fade-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* ========== PARTICLES ========== */
-  .particle {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-    animation: particle-burst 0.8s var(--ease-smooth) forwards;
-  }
-  @keyframes particle-burst {
-    0%   { opacity: 1; transform: scale(1); }
-    100% { opacity: 0; transform: scale(0) translate(var(--tx), var(--ty)); }
-  }
-
-  /* ========== DEATH STATE ========== */
-  #death-screen {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 700;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(8px);
-  }
-  #death-screen.visible { display: flex; }
-  .death-card {
-    background: #fff;
-    border: 2.5px solid #111;
-    border-radius: 28px;
-    padding: 36px 28px;
-    text-align: center;
-    max-width: 320px;
-    animation: sheet-up 0.4s var(--ease-bounce);
-  }
-  .death-emoji { font-size: 56px; margin-bottom: 12px; }
-  .death-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 26px; margin-bottom: 8px; }
-  .death-desc  { font-size: 14px; color: #555; margin-bottom: 24px; line-height: 1.5; }
-  .death-btn {
-    background: linear-gradient(135deg, #FF8C00, #FF4D6D);
-    color: #fff;
-    border: 2.5px solid #111;
-    border-radius: 14px;
-    padding: 14px 32px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 900;
-    font-size: 16px;
-    cursor: pointer;
-    box-shadow: 0 4px 0 #111;
-    transition: transform 0.1s var(--ease-bounce), box-shadow 0.1s;
-  }
-  .death-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #111; }
+/* sync indicator */
+#sync-dot{
+  position:fixed;bottom:60px;right:14px;width:8px;height:8px;border-radius:50%;
+  background:#10B981;opacity:0;transition:opacity .3s;z-index:50;
+}
+#sync-dot.syncing{opacity:1;animation:sync-pulse 1s ease-in-out infinite}
+@keyframes sync-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.5)}}
 </style>
 </head>
 <body>
 
+<!-- ======================================================
+     OVERLAYS (always present)
+======================================================= -->
 <div id="evo-overlay"></div>
 <div id="confetti-container"></div>
+<div id="sync-dot"></div>
+
+<div id="toast"></div>
+
 <div id="death-screen">
   <div class="death-card">
-    <div class="death-emoji">💀</div>
-    <div class="death-title">Uh oh...</div>
-    <div class="death-desc" id="death-msg">Your pet was neglected and passed away. Give it another shot!</div>
-    <button class="death-btn" onclick="resetGame()">🥚 Start Over</button>
+    <span class="death-emoji">💀</span>
+    <div class="death-title">Flatlined...</div>
+    <div class="death-desc">Your pet was neglected and didn't make it. Start fresh?</div>
+    <button class="death-btn" onclick="resetGame()">🥚 Hatch Again</button>
   </div>
 </div>
 
 <div id="app">
-  <!-- TOP BAR -->
-  <div id="topbar">
-    <button id="sound-btn" onclick="toggleSound()" title="Toggle Sound">🔊</button>
-    <div class="card" id="stats-card">
+  <!-- ================================================
+       SCREEN: INTRO
+  ================================================== -->
+  <div class="screen" id="screen-intro">
+    <div class="intro-inner">
+      <div class="logo-wrap">
+        <!-- Glow rings -->
+        <div class="glow-ring"></div>
+        <div class="glow-ring"></div>
+        <div class="glow-ring"></div>
+        <!-- Main emblem -->
+        <div class="logo-emblem" id="intro-emblem">
+          <svg viewBox="0 0 130 130" width="130" height="130" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="coin-g" cx="38%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#FFE066"/>
+                <stop offset="55%" stop-color="#FFC93C"/>
+                <stop offset="100%" stop-color="#E5A200"/>
+              </radialGradient>
+              <radialGradient id="shine-g" cx="35%" cy="25%" r="60%">
+                <stop offset="0%" stop-color="#fff" stop-opacity=".55"/>
+                <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+              </radialGradient>
+              <filter id="coin-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#00000044"/>
+              </filter>
+            </defs>
+            <!-- outer ring -->
+            <circle cx="65" cy="65" r="62" fill="#CC8800" filter="url(#coin-shadow)"/>
+            <circle cx="65" cy="65" r="60" fill="url(#coin-g)"/>
+            <!-- inner ring groove -->
+            <circle cx="65" cy="65" r="52" fill="none" stroke="#E5A200" stroke-width="2.5"/>
+            <!-- SOL sun rays -->
+            <g opacity=".55" stroke="#FF8C00" stroke-width="2" stroke-linecap="round">
+              <line x1="65" y1="11" x2="65" y2="4"/>
+              <line x1="65" y1="119" x2="65" y2="126"/>
+              <line x1="11" y1="65" x2="4" y2="65"/>
+              <line x1="119" y1="65" x2="126" y2="65"/>
+              <line x1="23.5" y1="23.5" x2="18" y2="18"/>
+              <line x1="106.5" y1="106.5" x2="112" y2="112"/>
+              <line x1="23.5" y1="106.5" x2="18" y2="112"/>
+              <line x1="106.5" y1="23.5" x2="112" y2="18"/>
+            </g>
+            <!-- creature body -->
+            <ellipse cx="65" cy="72" rx="28" ry="26" fill="#FF8C00" stroke="#C46000" stroke-width="1.5"/>
+            <!-- creature belly -->
+            <ellipse cx="65" cy="78" rx="16" ry="12" fill="#FFD23F" opacity=".6"/>
+            <!-- highlight -->
+            <ellipse cx="54" cy="60" rx="9" ry="7" fill="#fff" opacity=".28" transform="rotate(-18,54,60)"/>
+            <!-- creature eyes -->
+            <circle cx="56" cy="65" r="5.5" fill="#111"/>
+            <circle cx="74" cy="65" r="5.5" fill="#111"/>
+            <circle cx="54.5" cy="63.5" r="2" fill="#fff"/>
+            <circle cx="72.5" cy="63.5" r="2" fill="#fff"/>
+            <!-- smile -->
+            <path d="M56 76 Q65 84 74 76" stroke="#111" stroke-width="2" fill="#FF6B00" stroke-linecap="round"/>
+            <!-- cheeks -->
+            <circle cx="47" cy="72" r="5" fill="#FF4D6D" opacity=".35"/>
+            <circle cx="83" cy="72" r="5" fill="#FF4D6D" opacity=".35"/>
+            <!-- creature ears/horns -->
+            <ellipse cx="51" cy="48" rx="5" ry="8" fill="#FF8C00" stroke="#C46000" stroke-width="1.5" transform="rotate(-15,51,48)"/>
+            <ellipse cx="79" cy="48" rx="5" ry="8" fill="#FF8C00" stroke="#C46000" stroke-width="1.5" transform="rotate(15,79,48)"/>
+            <!-- shine overlay -->
+            <circle cx="65" cy="65" r="60" fill="url(#shine-g)"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-tamago">TAMAGO</span><span class="logo-sol">SOL</span>
+        </div>
+        <div class="logo-tagline">Raise · Stake · Evolve</div>
+      </div>
+      <div class="intro-loader"><div class="intro-loader-fill" id="loader-fill"></div></div>
+      <div class="intro-skip" onclick="skipIntro()">TAP TO SKIP</div>
+    </div>
+  </div>
+
+  <!-- ================================================
+       SCREEN: AUTH
+  ================================================== -->
+  <div class="screen hidden" id="screen-auth">
+    <div class="auth-logo-mini">
+      <svg viewBox="0 0 80 80" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#FFC93C"/>
+        <circle cx="40" cy="40" r="34" fill="none" stroke="#E5A200" stroke-width="2"/>
+        <ellipse cx="40" cy="46" rx="18" ry="17" fill="#FF8C00" stroke="#C46000" stroke-width="1.5"/>
+        <ellipse cx="40" cy="52" rx="10" ry="7" fill="#FFD23F" opacity=".6"/>
+        <circle cx="33" cy="41" r="4" fill="#111"/><circle cx="47" cy="41" r="4" fill="#111"/>
+        <circle cx="31.5" cy="39.5" r="1.5" fill="#fff"/><circle cx="45.5" cy="39.5" r="1.5" fill="#fff"/>
+        <path d="M33 50 Q40 57 47 50" stroke="#111" stroke-width="1.5" fill="#FF6B00" stroke-linecap="round"/>
+        <ellipse cx="30" cy="32" rx="4" ry="6" fill="#FF8C00" stroke="#C46000" stroke-width="1" transform="rotate(-15,30,32)"/>
+        <ellipse cx="50" cy="32" rx="4" ry="6" fill="#FF8C00" stroke="#C46000" stroke-width="1" transform="rotate(15,50,32)"/>
+      </svg>
+      <div class="logo-text"><span class="logo-tamago">TAMAGO</span><span class="logo-sol">SOL</span></div>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign In</div>
+        <div class="auth-tab" id="tab-register" onclick="switchTab('register')">New Account</div>
+      </div>
+      <div class="auth-form" id="auth-form">
+        <div class="field-wrap" id="field-username" style="display:none">
+          <div class="field-label">Username</div>
+          <input class="field-input" type="text" id="inp-username" placeholder="solbit_ranger" maxlength="24" autocomplete="username">
+        </div>
+        <div class="field-wrap">
+          <div class="field-label">Email</div>
+          <input class="field-input" type="email" id="inp-email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="field-wrap">
+          <div class="field-label">Password</div>
+          <input class="field-input" type="password" id="inp-password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <div class="auth-error" id="auth-error"></div>
+        <button class="auth-submit" id="auth-submit-btn" onclick="submitAuth()">Sign In</button>
+        <div class="auth-divider">or play as guest</div>
+        <button class="auth-submit" style="background:linear-gradient(135deg,#6B7280,#374151)" onclick="playAsGuest()">👤 Continue as Guest</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================
+       SCREEN: GAME
+  ================================================== -->
+  <div class="screen hidden" id="screen-game">
+    <!-- Navbar -->
+    <div id="navbar">
+      <div class="nav-user">
+        <div class="nav-avatar" id="nav-avatar">🐣</div>
+        <span class="nav-username" id="nav-username">Guest</span>
+      </div>
+      <div id="sogo-pill">
+        <span class="sogo-coin">🪙</span>
+        <div>
+          <div id="sogo-amount">0</div>
+          <div class="sogo-label">$SOGO</div>
+        </div>
+      </div>
+      <div class="nav-sound" id="nav-sound" onclick="toggleSound()">🔊</div>
+      <div class="nav-logout" onclick="confirmLogout()" title="Logout">⏏</div>
+    </div>
+
+    <!-- Stats -->
+    <div id="stats-card">
       <div class="stats-grid">
         <div class="stat-row">
-          <div class="stat-label"><span>🍖 Hunger</span><span id="hunger-val">100</span></div>
+          <div class="stat-head"><span>🍖 Hunger</span><span class="stat-val" id="hunger-val">100</span></div>
           <div class="stat-bar-bg"><div class="stat-bar-fill hunger" id="hunger-bar" style="width:100%"></div></div>
         </div>
         <div class="stat-row">
-          <div class="stat-label"><span>⚡ Energy</span><span id="energy-val">100</span></div>
+          <div class="stat-head"><span>⚡ Energy</span><span class="stat-val" id="energy-val">100</span></div>
           <div class="stat-bar-bg"><div class="stat-bar-fill energy" id="energy-bar" style="width:100%"></div></div>
         </div>
         <div class="stat-row">
-          <div class="stat-label"><span>😊 Mood</span><span id="mood-val">100</span></div>
+          <div class="stat-head"><span>😊 Mood</span><span class="stat-val" id="mood-val">100</span></div>
           <div class="stat-bar-bg"><div class="stat-bar-fill mood" id="mood-bar" style="width:100%"></div></div>
         </div>
         <div class="stat-row">
-          <div class="stat-label"><span>⛏ Hash</span><span id="hash-val">100</span></div>
+          <div class="stat-head"><span>⛏ Hash</span><span class="stat-val" id="hash-val">100</span></div>
           <div class="stat-bar-bg"><div class="stat-bar-fill hashpow" id="hash-bar" style="width:100%"></div></div>
         </div>
       </div>
     </div>
-    <div id="sogo-pill">
-      <span id="sogo-icon">🪙</span>
-      <div>
-        <div id="sogo-amount">0</div>
-        <div id="sogo-label">$SOGO</div>
+
+    <!-- Creature stage -->
+    <div id="creature-stage">
+      <div id="creature-wrap" onclick="tapCreature()">
+        <div id="creature-name-tag">Tap to hatch!</div>
+        <div id="creature-svg-wrap"></div>
+        <div id="mood-emoji">🥚</div>
+      </div>
+      <div id="stage-bg-glow"></div>
+    </div>
+
+    <!-- Stake bar -->
+    <div id="stake-bar">⛏ Staking active — your pet is mining $SOGO...</div>
+
+    <!-- Action buttons -->
+    <div id="actions">
+      <button class="action-btn" id="btn-feed"  onclick="doAction('feed')">
+        <span class="btn-icon">🍖</span><span class="btn-label">Feed</span>
+        <span class="btn-cd" id="cd-feed"></span>
+      </button>
+      <button class="action-btn" id="btn-play"  onclick="doAction('play')">
+        <span class="btn-icon">🎮</span><span class="btn-label">Play</span>
+        <span class="btn-cd" id="cd-play"></span>
+      </button>
+      <button class="action-btn" id="btn-stake" onclick="doAction('stake')">
+        <span class="btn-icon">💎</span><span class="btn-label">Stake</span>
+        <span class="btn-cd" id="cd-stake"></span>
+      </button>
+      <button class="action-btn" id="btn-clean" onclick="doAction('clean')">
+        <span class="btn-icon">🧼</span><span class="btn-label">Clean</span>
+        <span class="btn-cd" id="cd-clean"></span>
+      </button>
+    </div>
+
+    <!-- Bottom row -->
+    <div id="bottom-row">
+      <div id="age-badge">🥚 Age: 0s</div>
+      <div class="corner-btns">
+        <button class="corner-btn" onclick="openModal('howto')" title="How to Play">?</button>
+        <button class="corner-btn" onclick="openModal('about')" title="About">ℹ</button>
       </div>
     </div>
+
+    <div id="footer">tamagosol.fun</div>
   </div>
-
-  <!-- CREATURE STAGE -->
-  <div id="creature-stage">
-    <div id="creature-wrap" onclick="tapCreature()">
-      <div id="creature-name-tag">...</div>
-      <div id="creature-svg-wrap"></div>
-      <div id="mood-emoji">😊</div>
-    </div>
-  </div>
-
-  <!-- STAKE INFO -->
-  <div id="stake-info">⛏ Staking active — earning $SOGO passively...</div>
-
-  <!-- ACTIONS -->
-  <div id="actions">
-    <button class="action-btn" id="btn-feed"  onclick="doAction('feed')">
-      <span class="btn-icon">🍖</span>
-      <span class="btn-label">Feed</span>
-      <span class="btn-cd" id="cd-feed"></span>
-    </button>
-    <button class="action-btn" id="btn-play"  onclick="doAction('play')">
-      <span class="btn-icon">🎮</span>
-      <span class="btn-label">Play</span>
-      <span class="btn-cd" id="cd-play"></span>
-    </button>
-    <button class="action-btn" id="btn-stake" onclick="doAction('stake')">
-      <span class="btn-icon">💎</span>
-      <span class="btn-label">Stake</span>
-      <span class="btn-cd" id="cd-stake"></span>
-    </button>
-    <button class="action-btn" id="btn-clean" onclick="doAction('clean')">
-      <span class="btn-icon">🧼</span>
-      <span class="btn-label">Clean</span>
-      <span class="btn-cd" id="cd-clean"></span>
-    </button>
-  </div>
-
-  <!-- BOTTOM ROW -->
-  <div id="bottom-row">
-    <div id="age-badge">🥚 Age: 0d</div>
-    <div id="corner-btns">
-      <button class="corner-btn" onclick="openModal('howto')" title="How to Play">?</button>
-      <button class="corner-btn" onclick="openModal('about')" title="About">ℹ</button>
-    </div>
-  </div>
-
-  <div id="footer">tamagosol.fun</div>
 </div>
 
-<!-- MODALS -->
+<!-- ================================================
+     MODALS
+================================================== -->
 <div id="modal-howto" class="modal-backdrop" style="display:none" onclick="closeModalIfBackdrop(event,'modal-howto')">
   <div class="modal-sheet">
     <button class="modal-close" onclick="closeModal('modal-howto')">×</button>
     <div class="modal-title">🎮 How to Play</div>
-    <div class="modal-step">
-      <div class="modal-step-icon">🥚</div>
-      <div class="modal-step-text">
-        <strong>Hatch Your Pet</strong>
-        <span>Tap the egg to hatch a random Tamagosol creature!</span>
-      </div>
+    <div class="modal-step"><div class="modal-icon">🥚</div>
+      <div class="modal-step-text"><strong>Hatch Your Pet</strong><span>Tap the egg to hatch a random species — Solbit, Aquabit, or Blazebit!</span></div>
     </div>
-    <div class="modal-step">
-      <div class="modal-step-icon">🍖</div>
-      <div class="modal-step-text">
-        <strong>Keep Stats Up</strong>
-        <span>Hunger, Energy, Mood & Hash Power decay over time. Use Feed, Play, Stake & Clean to keep them high.</span>
-      </div>
+    <div class="modal-step"><div class="modal-icon">📊</div>
+      <div class="modal-step-text"><strong>Maintain Stats</strong><span>Hunger, Energy, Mood & Hash Power decay in real time. Keep them above 0 or your pet dies.</span></div>
     </div>
-    <div class="modal-step">
-      <div class="modal-step-icon">💎</div>
-      <div class="modal-step-text">
-        <strong>Stake to Earn</strong>
-        <span>Tap Stake to put your pet to work mining $SOGO. Unstake anytime to collect earnings.</span>
-      </div>
+    <div class="modal-step"><div class="modal-icon">💎</div>
+      <div class="modal-step-text"><strong>Stake to Earn</strong><span>Put your pet to work mining $SOGO passively. Higher Hash Power = more earnings per second.</span></div>
     </div>
-    <div class="modal-step">
-      <div class="modal-step-icon">✨</div>
-      <div class="modal-step-text">
-        <strong>Evolve!</strong>
-        <span>Keep stats high and your pet evolves into powerful Diamond & Whale forms. Neglect it and... 💀</span>
-      </div>
+    <div class="modal-step"><div class="modal-icon">✨</div>
+      <div class="modal-step-text"><strong>Evolve!</strong><span>Care well and your pet evolves into Diamond then Whale forms. Neglect it and it becomes Neglected… 💀</span></div>
     </div>
-    <div class="modal-step">
-      <div class="modal-step-icon">🪙</div>
-      <div class="modal-step-text">
-        <strong>$SOGO Token</strong>
-        <span>Every action earns $SOGO. Staking earns the most over time. Watch your balance grow!</span>
-      </div>
+    <div class="modal-step"><div class="modal-icon">☁️</div>
+      <div class="modal-step-text"><strong>Cloud Save</strong><span>Sign in to save progress across devices. Guests save locally to this browser only.</span></div>
     </div>
   </div>
 </div>
@@ -773,42 +809,26 @@
   <div class="modal-sheet">
     <button class="modal-close" onclick="closeModal('modal-about')">×</button>
     <div class="modal-title">🌐 About Tamagosol</div>
-    <div class="modal-step">
-      <div class="modal-step-icon">🦎</div>
-      <div class="modal-step-text">
-        <strong>What is Tamagosol?</strong>
-        <span>A crypto-themed virtual pet game. Hatch a creature, raise it with care, and evolve it into legendary forms!</span>
-      </div>
+    <div class="modal-step"><div class="modal-icon">🦎</div>
+      <div class="modal-step-text"><strong>What is Tamagosol?</strong><span>A crypto-themed virtual pet game. Hatch a creature, raise it with care, and evolve it into legendary forms!</span></div>
     </div>
-    <div class="modal-step">
-      <div class="modal-step-icon">🪙</div>
-      <div class="modal-step-text">
-        <strong>What is $SOGO?</strong>
-        <span>$SOGO is a fun, fictional in-game currency. It has zero real-world value and is not a financial product.</span>
-      </div>
+    <div class="modal-step"><div class="modal-icon">🪙</div>
+      <div class="modal-step-text"><strong>What is $SOGO?</strong><span>$SOGO is a purely fictional in-game token. It has zero real-world value and is not a financial product.</span></div>
     </div>
-    <div class="modal-step">
-      <div class="modal-step-icon">⛏</div>
-      <div class="modal-step-text">
-        <strong>What is Hash Power?</strong>
-        <span>Hash Power represents your pet's mining ability. Higher Hash = more $SOGO earned when staking!</span>
-      </div>
+    <div class="modal-step"><div class="modal-icon">⛏</div>
+      <div class="modal-step-text"><strong>What is Hash Power?</strong><span>Your pet's mining ability. Higher Hash Power = faster $SOGO earnings while staking.</span></div>
     </div>
-    <div class="modal-step">
-      <div class="modal-step-icon">🌍</div>
-      <div class="modal-step-text">
-        <strong>tamagosol.fun</strong>
-        <span>Pure browser game — no wallet, no real crypto, no sign-up required. Just tap and have fun!</span>
-      </div>
+    <div class="modal-step"><div class="modal-icon">🌍</div>
+      <div class="modal-step-text"><strong>tamagosol.fun</strong><span>Pure browser game — no wallet, no real crypto required. Just tap and enjoy!</span></div>
     </div>
   </div>
 </div>
 
 <!-- ONBOARDING -->
 <div id="onboarding" style="display:none">
-  <div class="ob-bubble" id="ob-bubble">
+  <div class="ob-bubble">
     <div class="ob-title" id="ob-title">👋 Welcome to Tamagosol!</div>
-    <div class="ob-desc" id="ob-desc">You're about to hatch your very own crypto pet. Tap the egg to begin!</div>
+    <div class="ob-desc" id="ob-desc">You've got a brand-new egg. Tap it to hatch your first crypto pet!</div>
     <div class="ob-footer">
       <div class="ob-dots">
         <div class="ob-dot active" id="ob-dot-0"></div>
@@ -817,669 +837,695 @@
       </div>
       <div class="ob-btns">
         <button class="ob-btn skip" onclick="skipOnboarding()">Skip</button>
-        <button class="ob-btn primary" id="ob-next-btn" onclick="nextOnboarding()">Next →</button>
+        <button class="ob-btn primary" id="ob-next" onclick="nextOnboarding()">Next →</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// ============================================================
-// STATE MANAGEMENT
-// ============================================================
-const SAVE_KEY = 'tamagosol_v3';
+'use strict';
+/* ================================================================
+   CONFIG
+================================================================ */
+// When deployed to Vercel, set this to your API server URL
+// e.g. 'https://your-api.replit.app'
+const API_ORIGIN = (() => {
+  const h = window.location.hostname;
+  if (h === 'localhost' || h.includes('replit') || h.includes('127.0.0.1')) return '';
+  // For production deployments, update this:
+  return '';
+})();
+const API = (path) => API_ORIGIN + '/api' + path;
+
+/* ================================================================
+   STATE
+================================================================ */
+const SAVE_KEY = 'tamagosol_v4';
+const TOKEN_KEY = 'tamagosol_token';
 
 const SPECIES = [
-  { id: 'golden', name: 'Solbit',   color: '#FFC93C', color2: '#FFD23F', accent: '#FF8C00' },
-  { id: 'cyan',   name: 'Aquabit',  color: '#22D3EE', color2: '#67E8F9', accent: '#0EA5E9' },
-  { id: 'coral',  name: 'Blazebit', color: '#FF4D6D', color2: '#FF6B6B', accent: '#DC2626' },
+  {id:'golden', name:'Solbit',   c:'#FFC93C', c2:'#FFE580', ac:'#FF8C00'},
+  {id:'cyan',   name:'Aquabit',  c:'#22D3EE', c2:'#67E8F9', ac:'#0EA5E9'},
+  {id:'coral',  name:'Blazebit', c:'#FF4D6D', c2:'#FF6B6B', ac:'#DC2626'},
 ];
+const STAGE_NAMES = {egg:'Egg',baby:'Baby',teen:'Teen',adult:'Adult',diamond:'💎 Diamond',whale:'🐋 Whale',neglected:'😵 Neglected'};
+const STAGE_EMOJI = {egg:'🥚',baby:'🐣',teen:'🦎',adult:'🦕',diamond:'💎',whale:'🐋',neglected:'💀'};
 
-const STAGES = ['egg', 'baby', 'teen', 'adult', 'diamond', 'whale', 'neglected'];
-const STAGE_NAMES = { egg:'Egg', baby:'Baby', teen:'Teen', adult:'Adult', diamond:'💎 Diamond', whale:'🐋 Whale', neglected:'😵 Neglected' };
+const DECAY = {hunger:.6,energy:.5,mood:.55,hashpow:.3};
+const STAKE_RATE = 0.09;
 
-const STAT_DECAY_PER_SEC = { hunger: 0.6, energy: 0.5, mood: 0.55, hashpow: 0.3 };
-const STAKE_EARN_PER_SEC = 0.08; // base $SOGO per sec while staking
-const HATCH_DELAY = 800;
-
-let state = {
-  hatched: false,
-  species: null,     // index 0-2
-  stage: 'egg',
-  stats: { hunger: 100, energy: 100, mood: 100, hashpow: 100 },
-  sogo: 0,
-  ageSeconds: 0,
-  staking: false,
-  stakeStartTime: null,
-  lastTick: Date.now(),
-  cooldowns: { feed: 0, play: 0, stake: 0, clean: 0 },
-  evolutionCount: 0,
-  dead: false,
-};
-
-let soundEnabled = true;
-let animFrame = null;
+let state = defaultState();
+let user  = null; // {id, username, avatarSpecies} or null for guest
+let soundOn = true;
+let lastFrame = 0;
+let currentTab = 'login';
 let onboardingStep = 0;
-const ONBOARDING_STEPS = [
-  { title: '👋 Welcome to Tamagosol!', desc: 'You\'re about to hatch your very own crypto pet. Tap the egg to begin!' },
-  { title: '📊 Watch Your Stats', desc: 'Keep Hunger, Energy, Mood & Hash Power above 0 using the action buttons!' },
-  { title: '💎 Earn & Evolve', desc: 'Stake your pet to earn $SOGO over time. Keep stats high to unlock powerful evolutions!' },
+let lastSyncTime = 0;
+
+const OB_STEPS = [
+  {title:'👋 Welcome to Tamagosol!', desc:"You've got a fresh egg. Tap it to hatch your first crypto pet!"},
+  {title:'📊 Keep Stats Healthy',    desc:'Hunger, Energy, Mood & Hash Power all decay over time. Use the buttons below to keep them up!'},
+  {title:'💎 Stake & Evolve',        desc:"Hit Stake to mine $SOGO while you're away. Keep stats high and your pet will evolve!"},
 ];
 
-// ============================================================
-// SAVE / LOAD
-// ============================================================
-function saveState() {
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch(e) {}
+function defaultState() {
+  return {
+    hatched:false, species:null, stage:'egg',
+    stats:{hunger:100,energy:100,mood:100,hashpow:100},
+    sogo:0, ageSeconds:0,
+    staking:false, stakeStartTime:null,
+    lastTick:Date.now(),
+    cooldowns:{feed:0,play:0,stake:0,clean:0},
+    dead:false, evolutionCount:0,
+    hatching:false,
+  };
 }
 
-function loadState() {
+/* ================================================================
+   PERSISTENCE
+================================================================ */
+function saveLocal() {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch(e){}
+}
+function loadLocal() {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
     if (!raw) return;
-    const saved = JSON.parse(raw);
-    state = { ...state, ...saved };
-    // Apply time decay since last save
-    if (state.lastTick && state.hatched && !state.dead) {
-      const elapsed = (Date.now() - state.lastTick) / 1000;
-      applyDecay(Math.min(elapsed, 3600)); // cap at 1 hr
-    }
+    const s = JSON.parse(raw);
+    state = {...defaultState(), ...s};
+    if (state.hatched && !state.dead) applyDecay((Date.now() - state.lastTick) / 1000);
     state.lastTick = Date.now();
-  } catch(e) { resetGame(true); }
+  } catch(e){ state = defaultState(); }
+}
+async function syncToServer() {
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (!token || !user) return;
+  try {
+    showSyncDot(true);
+    await fetch(API('/game/state'), {
+      method:'PUT',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({state}),
+    });
+    lastSyncTime = Date.now();
+  } catch(e){} finally { showSyncDot(false); }
+}
+async function loadFromServer() {
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (!token) return false;
+  try {
+    const r = await fetch(API('/game/state'),{headers:{'Authorization':'Bearer '+token}});
+    if (!r.ok) return false;
+    const data = await r.json();
+    if (data.state) {
+      state = {...defaultState(), ...data.state};
+      if (state.hatched && !state.dead) applyDecay((Date.now() - state.lastTick) / 1000);
+      state.lastTick = Date.now();
+      return true;
+    }
+  } catch(e){}
+  return false;
 }
 
-// ============================================================
-// DECAY & TICK
-// ============================================================
+function showSyncDot(on) {
+  const d = document.getElementById('sync-dot');
+  d.classList.toggle('syncing', on);
+}
+
+/* ================================================================
+   DECAY & TICK
+================================================================ */
 function applyDecay(seconds) {
   if (!state.hatched || state.stage === 'egg' || state.dead) return;
-  const mult = state.staking ? 1.3 : 1.0; // staking drains more
+  const mult = state.staking ? 1.35 : 1;
+  seconds = Math.min(seconds, 3600);
   for (const s of ['hunger','energy','mood','hashpow']) {
-    state.stats[s] = Math.max(0, state.stats[s] - STAT_DECAY_PER_SEC[s] * seconds * mult);
+    state.stats[s] = Math.max(0, state.stats[s] - DECAY[s] * seconds * mult);
   }
   state.ageSeconds += seconds;
   if (state.staking && state.stakeStartTime) {
-    const sogoEarned = STAKE_EARN_PER_SEC * (state.stats.hashpow / 100) * seconds;
-    state.sogo += sogoEarned;
+    const earned = STAKE_RATE * (state.stats.hashpow / 100) * seconds;
+    state.sogo += earned;
   }
 }
 
 function checkDeath() {
   if (state.dead || !state.hatched || state.stage === 'egg') return;
-  const allZero = ['hunger','energy','mood'].every(s => state.stats[s] <= 0);
-  if (allZero) {
-    state.dead = true;
-    state.staking = false;
-    saveState();
+  if (['hunger','energy','mood'].every(s => state.stats[s] <= 0)) {
+    state.dead = true; state.staking = false;
+    saveLocal(); syncToServer();
     document.getElementById('death-screen').classList.add('visible');
   }
 }
 
 function checkEvolution() {
   if (!state.hatched || state.dead) return;
-  const avg = (state.stats.hunger + state.stats.energy + state.stats.mood + state.stats.hashpow) / 4;
-  const age = state.ageSeconds;
-
-  let newStage = state.stage;
-
-  if (state.stage === 'baby' && age > 60) {
-    newStage = 'teen';
-  } else if (state.stage === 'teen' && age > 180) {
-    newStage = avg > 65 ? 'adult' : 'neglected';
-  } else if (state.stage === 'adult' && age > 400) {
-    if (avg > 80) newStage = 'whale';
-    else if (avg > 60) newStage = 'diamond';
-    else newStage = 'neglected';
-  }
-
-  if (newStage !== state.stage) {
-    triggerEvolution(newStage);
-  }
+  const avg = (state.stats.hunger+state.stats.energy+state.stats.mood+state.stats.hashpow)/4;
+  const age  = state.ageSeconds;
+  let next = state.stage;
+  if (state.stage==='baby'  && age>60)  next = 'teen';
+  if (state.stage==='teen'  && age>180) next = avg>65 ? 'adult' : 'neglected';
+  if (state.stage==='adult' && age>400) next = avg>80 ? 'whale' : avg>60 ? 'diamond' : 'neglected';
+  if (next !== state.stage) triggerEvolution(next);
 }
 
-// ============================================================
-// MAIN GAME LOOP
-// ============================================================
-let lastFrame = 0;
-function gameLoop(timestamp) {
-  if (!lastFrame) lastFrame = timestamp;
-  const dt = (timestamp - lastFrame) / 1000;
-  lastFrame = timestamp;
-
+/* ================================================================
+   GAME LOOP
+================================================================ */
+function gameLoop(ts) {
+  const dt = lastFrame ? (ts - lastFrame) / 1000 : 0;
+  lastFrame = ts;
   if (state.hatched && !state.dead) {
     applyDecay(dt);
     checkDeath();
     checkEvolution();
   }
-
-  // Cooldown timers
+  // cooldown timers
   const now = Date.now();
   for (const a of ['feed','play','stake','clean']) {
-    const remaining = Math.max(0, state.cooldowns[a] - now);
+    const rem = Math.max(0, (state.cooldowns[a]||0) - now);
     const cd = document.getElementById('cd-' + a);
     const btn = document.getElementById('btn-' + a);
-    if (remaining > 0) {
-      if (cd) cd.textContent = (remaining/1000).toFixed(1) + 's';
-      if (btn) btn.disabled = true;
-    } else {
-      if (cd) cd.textContent = '';
-      if (btn && !state.dead) btn.disabled = false;
-    }
+    if (!cd || !btn) continue;
+    if (rem > 0) { cd.textContent = (rem/1000).toFixed(1)+'s'; btn.disabled = true; }
+    else { cd.textContent = ''; if (!state.dead) btn.disabled = false; }
   }
-
-  updateUI();
-  animFrame = requestAnimationFrame(gameLoop);
+  updateGameUI();
+  requestAnimationFrame(gameLoop);
 }
 
-// ============================================================
-// UI UPDATE
-// ============================================================
-function updateUI() {
+/* ================================================================
+   UI UPDATE
+================================================================ */
+function updateGameUI() {
   if (!state.hatched) return;
-
-  // Stats
-  for (const s of ['hunger','energy','mood','hashpow']) {
+  const statMap = {hunger:'hunger',energy:'energy',mood:'mood',hashpow:'hash'};
+  for (const [s, id] of Object.entries(statMap)) {
     const v = Math.round(state.stats[s]);
-    const mapId = { hunger:'hunger', energy:'energy', mood:'mood', hashpow:'hash' };
-    const barEl  = document.getElementById(mapId[s] + '-bar');
-    const valEl  = document.getElementById(mapId[s] + '-val');
-    if (barEl) barEl.style.width = v + '%';
-    if (valEl) valEl.textContent = v;
-    // Color warning
-    if (barEl) {
-      if (v < 25) barEl.style.filter = 'saturate(1.5) brightness(0.9)';
-      else barEl.style.filter = '';
-    }
+    const bar = document.getElementById(id+'-bar');
+    const val = document.getElementById(id+'-val');
+    if (bar) { bar.style.width = v+'%'; bar.classList.toggle('low', v < 25); }
+    if (val) { val.textContent = v; val.classList.toggle('danger', v < 25); }
   }
-
-  // Sogo
   document.getElementById('sogo-amount').textContent = Math.floor(state.sogo).toLocaleString();
-
-  // Age badge
   const age = state.ageSeconds;
-  let ageStr;
-  if (age < 60) ageStr = Math.floor(age) + 's';
-  else if (age < 3600) ageStr = Math.floor(age/60) + 'm';
-  else ageStr = (age/3600).toFixed(1) + 'h';
-  document.getElementById('age-badge').textContent = `${stageEmoji(state.stage)} Age: ${ageStr}`;
-
-  // Mood emoji
-  const avg = (state.stats.hunger + state.stats.energy + state.stats.mood) / 3;
-  let emoji = avg > 80 ? '😄' : avg > 60 ? '😊' : avg > 40 ? '😐' : avg > 20 ? '😟' : '😰';
-  document.getElementById('mood-emoji').textContent = emoji;
-
-  // Stake info
-  const si = document.getElementById('stake-info');
-  const stakeBtn = document.getElementById('btn-stake');
+  const ageStr = age<60 ? Math.floor(age)+'s' : age<3600 ? Math.floor(age/60)+'m' : (age/3600).toFixed(1)+'h';
+  document.getElementById('age-badge').textContent = (STAGE_EMOJI[state.stage]||'✨') + ' Age: ' + ageStr;
+  const avg = (state.stats.hunger+state.stats.energy+state.stats.mood)/3;
+  document.getElementById('mood-emoji').textContent = avg>80?'😄':avg>60?'😊':avg>40?'😐':avg>20?'😟':'😰';
+  // stake bar & button
+  const si = document.getElementById('stake-bar');
+  const sb = document.getElementById('btn-stake');
   if (state.staking) {
     si.classList.add('visible');
-    stakeBtn.classList.add('staking');
-    stakeBtn.querySelector('.btn-label').textContent = 'Unstake';
-    stakeBtn.querySelector('.btn-icon').textContent = '⛏';
+    sb.classList.add('staking');
+    sb.querySelector('.btn-label').textContent = 'Unstake';
+    sb.querySelector('.btn-icon').textContent = '⛏';
   } else {
     si.classList.remove('visible');
-    stakeBtn.classList.remove('staking');
-    stakeBtn.querySelector('.btn-label').textContent = 'Stake';
-    stakeBtn.querySelector('.btn-icon').textContent = '💎';
+    sb.classList.remove('staking');
+    sb.querySelector('.btn-label').textContent = 'Stake';
+    sb.querySelector('.btn-icon').textContent = '💎';
   }
-
-  // Creature name
-  const sp = SPECIES[state.species];
+  // name tag
+  const sp = state.species !== null ? SPECIES[state.species] : null;
   if (sp) {
-    const stageName = STAGE_NAMES[state.stage] || state.stage;
-    document.getElementById('creature-name-tag').textContent = `${sp.name} · ${stageName}`;
+    const sn = STAGE_NAMES[state.stage] || state.stage;
+    document.getElementById('creature-name-tag').textContent = sp.name + ' · ' + sn;
   }
 }
 
-function stageEmoji(stage) {
-  return { egg:'🥚', baby:'🐣', teen:'🦎', adult:'🦕', diamond:'💎', whale:'🐋', neglected:'💀' }[stage] || '✨';
-}
-
-// ============================================================
-// CREATURE RENDERING
-// ============================================================
+/* ================================================================
+   CREATURE RENDERING
+================================================================ */
 function renderCreature() {
   const wrap = document.getElementById('creature-svg-wrap');
+  if (!wrap) return;
+  if (state.stage === 'egg') { wrap.innerHTML = eggSVG(); return; }
   const sp = state.species !== null ? SPECIES[state.species] : SPECIES[0];
-
-  if (state.stage === 'egg') {
-    wrap.innerHTML = buildEggSVG(sp);
-    wrap.querySelector('svg').classList.add('egg-svg');
-    return;
-  }
-
-  wrap.innerHTML = buildCreatureSVG(sp, state.stage);
+  wrap.innerHTML = petSVG(sp, state.stage);
 }
 
-function buildEggSVG(sp) {
-  const c = sp ? sp.color : '#FFC93C';
-  const c2 = sp ? sp.color2 : '#FFD23F';
-  return `<svg width="120" height="140" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+function eggSVG() {
+  const sp = state.species !== null ? SPECIES[state.species] : null;
+  const c = sp ? sp.c : '#FFC93C';
+  const c2 = sp ? sp.c2 : '#FFE580';
+  return `<svg class="egg-idle" width="120" height="144" viewBox="0 0 120 144" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <radialGradient id="egg-grad" cx="35%" cy="30%" r="70%">
+      <radialGradient id="eg" cx="36%" cy="28%" r="72%">
         <stop offset="0%" stop-color="${c2}"/>
         <stop offset="100%" stop-color="${c}"/>
       </radialGradient>
     </defs>
-    <ellipse cx="60" cy="76" rx="46" ry="56" fill="url(#egg-grad)" stroke="#222" stroke-width="2.5"/>
-    <!-- crack lines -->
-    <path d="M55 42 L58 52 L52 58 L57 66" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
-    <path d="M65 40 L68 50 L63 55" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
-    <!-- highlight -->
-    <ellipse cx="42" cy="52" rx="12" ry="8" fill="#fff" opacity="0.35" transform="rotate(-20,42,52)"/>
-    <!-- dots -->
-    <circle cx="72" cy="90" r="5" fill="${c2}" opacity="0.5"/>
-    <circle cx="48" cy="98" r="3.5" fill="${c2}" opacity="0.4"/>
+    <ellipse cx="60" cy="78" rx="46" ry="57" fill="url(#eg)" stroke="#222" stroke-width="2.5"/>
+    <ellipse cx="42" cy="55" rx="13" ry="9" fill="#fff" opacity=".34" transform="rotate(-22,42,55)"/>
+    <path d="M53 44 L57 54 L50 61 L56 70" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".5"/>
+    <path d="M65 42 L69 52 L63 57" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".35"/>
+    <circle cx="74" cy="92" r="5" fill="${c2}" opacity=".45"/>
+    <circle cx="48" cy="100" r="3.5" fill="${c2}" opacity=".38"/>
   </svg>`;
 }
 
-function buildCreatureSVG(sp, stage) {
-  const c  = sp.color;
-  const c2 = sp.color2;
-  const ac = sp.accent;
+function petSVG(sp, stage) {
+  const {c,c2,ac} = sp;
+  const dim = {
+    baby:     {w:120,h:130,bx:34,by:32,ey:56,es:7,lh:20},
+    teen:     {w:138,h:148,bx:38,by:36,ey:58,es:8,lh:24},
+    adult:    {w:158,h:168,bx:44,by:42,ey:62,es:9,lh:28},
+    diamond:  {w:166,h:176,bx:46,by:44,ey:64,es:10,lh:30},
+    whale:    {w:188,h:190,bx:54,by:52,ey:68,es:11,lh:32},
+    neglected:{w:114,h:124,bx:28,by:26,ey:50,es:6,lh:18},
+  }[stage] || {w:120,h:130,bx:34,by:32,ey:56,es:7,lh:20};
 
-  const sizes = {
-    baby:      { w:110, h:120, bodyRx:30, bodyRy:30, ey:52, eyeSize:8, legH:18 },
-    teen:      { w:130, h:140, bodyRx:35, bodyRy:33, ey:55, eyeSize:9, legH:22 },
-    adult:     { w:150, h:160, bodyRx:42, bodyRy:40, ey:60, eyeSize:10, legH:26 },
-    diamond:   { w:160, h:170, bodyRx:44, bodyRy:42, ey:62, eyeSize:11, legH:28 },
-    whale:     { w:180, h:180, bodyRx:52, bodyRy:50, ey:65, eyeSize:12, legH:30 },
-    neglected: { w:110, h:120, bodyRx:28, bodyRy:28, ey:50, eyeSize:7,  legH:16 },
-  };
+  const cx = dim.w / 2;
+  const by_center = dim.h - dim.lh - dim.by;
+  const isNeg = stage === 'neglected';
+  const bc  = isNeg ? '#9CA3AF' : c;
+  const bc2 = isNeg ? '#D1D5DB' : c2;
+  const bac = isNeg ? '#6B7280' : ac;
 
-  const d = sizes[stage] || sizes.baby;
-  const cx = d.w / 2;
-  const bodyY = d.h - d.legH - d.bodyRy;
+  const gid = 'pg_' + stage;
+  const crown = (stage==='diamond'||stage==='whale') ? `
+    <polygon points="${cx},${by_center-dim.by-20} ${cx-11},${by_center-dim.by-8} ${cx+11},${by_center-dim.by-8}" fill="#FFC93C" stroke="#111" stroke-width="1.5"/>
+    <polygon points="${cx-11},${by_center-dim.by-8} ${cx-20},${by_center-dim.by+3} ${cx-2},${by_center-dim.by+3}" fill="#FFC93C" stroke="#111" stroke-width="1.5"/>
+    <polygon points="${cx+11},${by_center-dim.by-8} ${cx+20},${by_center-dim.by+3} ${cx+2},${by_center-dim.by+3}" fill="#FFC93C" stroke="#111" stroke-width="1.5"/>
+    <circle cx="${cx-8}" cy="${by_center-dim.by-12}" r="2.5" fill="#fff" opacity=".8"/>
+    <circle cx="${cx}"   cy="${by_center-dim.by-20}" r="2.5" fill="#fff" opacity=".8"/>
+    <circle cx="${cx+8}" cy="${by_center-dim.by-12}" r="2.5" fill="#fff" opacity=".8"/>
+  ` : '';
+  const glow = (stage==='diamond'||stage==='whale') ? `<ellipse cx="${cx}" cy="${by_center}" rx="${dim.bx+16}" ry="${dim.by+16}" fill="none" stroke="${c}" stroke-width="2.5" opacity=".28"/>` : '';
+  const eyes = isNeg
+    ? `<line x1="${cx-15}" y1="${dim.ey-6}" x2="${cx-7}" y2="${dim.ey+2}" stroke="#555" stroke-width="2.5" stroke-linecap="round"/>
+       <line x1="${cx-7}"  y1="${dim.ey-6}" x2="${cx-15}" y2="${dim.ey+2}" stroke="#555" stroke-width="2.5" stroke-linecap="round"/>
+       <line x1="${cx+7}"  y1="${dim.ey-6}" x2="${cx+15}" y2="${dim.ey+2}" stroke="#555" stroke-width="2.5" stroke-linecap="round"/>
+       <line x1="${cx+15}" y1="${dim.ey-6}" x2="${cx+7}"  y2="${dim.ey+2}" stroke="#555" stroke-width="2.5" stroke-linecap="round"/>`
+    : `<circle cx="${cx-11}" cy="${dim.ey}" r="${dim.es}" fill="#111"/>
+       <circle cx="${cx+11}" cy="${dim.ey}" r="${dim.es}" fill="#111"/>
+       <circle cx="${cx-9}"  cy="${dim.ey-2}" r="${Math.max(2,dim.es*.35)}" fill="#fff"/>
+       <circle cx="${cx+13}" cy="${dim.ey-2}" r="${Math.max(2,dim.es*.35)}" fill="#fff"/>`;
+  const mouth = isNeg
+    ? `<path d="M${cx-9} ${dim.ey+16} Q${cx} ${dim.ey+11} ${cx+9} ${dim.ey+16}" stroke="#666" stroke-width="2" fill="none" stroke-linecap="round"/>`
+    : `<path d="M${cx-9} ${dim.ey+14} Q${cx} ${dim.ey+23} ${cx+9} ${dim.ey+14}" stroke="#111" stroke-width="2" fill="${bac}" stroke-linecap="round"/>`;
+  const tail = stage === 'whale'
+    ? `<ellipse cx="${cx}" cy="${by_center+dim.by+12}" rx="${dim.bx*.7}" ry="10" fill="${c}" stroke="#111" stroke-width="1.5"/>`
+    : '';
+  const wings = stage === 'diamond'
+    ? `<ellipse cx="${cx-dim.bx-10}" cy="${by_center-8}" rx="${dim.bx*.45}" ry="${dim.by*.55}" fill="${c}" stroke="#111" stroke-width="1.5" opacity=".7" transform="rotate(-35,${cx-dim.bx-10},${by_center-8})"/>
+       <ellipse cx="${cx+dim.bx+10}" cy="${by_center-8}" rx="${dim.bx*.45}" ry="${dim.by*.55}" fill="${c}" stroke="#111" stroke-width="1.5" opacity=".7" transform="rotate(35,${cx+dim.bx+10},${by_center-8})"/>`
+    : '';
 
-  const bodyColor  = stage === 'neglected' ? '#9CA3AF' : `url(#body-grad-${stage})`;
-  const bodyColor2 = stage === 'neglected' ? '#D1D5DB' : c2;
-  const accColor   = stage === 'neglected' ? '#6B7280' : ac;
-
-  // Diamond/Whale extras
-  const crown = (stage === 'diamond' || stage === 'whale') ?
-    `<polygon points="${cx},${bodyY - d.bodyRy - 18} ${cx-10},${bodyY - d.bodyRy - 8} ${cx+10},${bodyY - d.bodyRy - 8}" fill="#FFC93C" stroke="#111" stroke-width="1.5"/>
-     <polygon points="${cx-10},${bodyY - d.bodyRy - 8} ${cx-18},${bodyY - d.bodyRy + 2} ${cx-2},${bodyY - d.bodyRy + 2}" fill="#FFC93C" stroke="#111" stroke-width="1.5"/>
-     <polygon points="${cx+10},${bodyY - d.bodyRy - 8} ${cx+18},${bodyY - d.bodyRy + 2} ${cx+2},${bodyY - d.bodyRy + 2}" fill="#FFC93C" stroke="#111" stroke-width="1.5"/>` : '';
-
-  const glowRing = (stage === 'diamond' || stage === 'whale') ?
-    `<ellipse cx="${cx}" cy="${bodyY}" rx="${d.bodyRx + 14}" ry="${d.bodyRy + 14}" fill="none" stroke="${c}" stroke-width="2" opacity="0.3"/>` : '';
-
-  const deadX = stage === 'neglected' ? `
-    <line x1="${cx-14}" y1="${d.ey-6}" x2="${cx-6}" y2="${d.ey+2}" stroke="#555" stroke-width="2" stroke-linecap="round"/>
-    <line x1="${cx-6}"  y1="${d.ey-6}" x2="${cx-14}" y2="${d.ey+2}" stroke="#555" stroke-width="2" stroke-linecap="round"/>
-    <line x1="${cx+6}"  y1="${d.ey-6}" x2="${cx+14}" y2="${d.ey+2}" stroke="#555" stroke-width="2" stroke-linecap="round"/>
-    <line x1="${cx+14}" y1="${d.ey-6}" x2="${cx+6}"  y2="${d.ey+2}" stroke="#555" stroke-width="2" stroke-linecap="round"/>
-  ` : `
-    <circle cx="${cx-10}" cy="${d.ey}" r="${d.eyeSize}" fill="#111"/>
-    <circle cx="${cx+10}" cy="${d.ey}" r="${d.eyeSize}" fill="#111"/>
-    <circle cx="${cx-8}"  cy="${d.ey-2}" r="${Math.max(2,d.eyeSize*0.35)}" fill="#fff"/>
-    <circle cx="${cx+12}" cy="${d.ey-2}" r="${Math.max(2,d.eyeSize*0.35)}" fill="#fff"/>
-  `;
-
-  const mouth = stage === 'neglected'
-    ? `<path d="M${cx-8} ${d.ey+16} Q${cx} ${d.ey+12} ${cx+8} ${d.ey+16}" stroke="#555" stroke-width="2" fill="none" stroke-linecap="round"/>`
-    : `<path d="M${cx-8} ${d.ey+14} Q${cx} ${d.ey+22} ${cx+8} ${d.ey+14}" stroke="#111" stroke-width="2" fill="${accColor}" stroke-linecap="round"/>`;
-
-  return `<svg width="${d.w}" height="${d.h+10}" viewBox="0 0 ${d.w} ${d.h+10}" xmlns="http://www.w3.org/2000/svg">
+  return `<svg width="${dim.w}" height="${dim.h+12}" viewBox="0 0 ${dim.w} ${dim.h+12}" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <radialGradient id="body-grad-${stage}" cx="35%" cy="30%" r="70%">
-        <stop offset="0%" stop-color="${bodyColor2}"/>
-        <stop offset="100%" stop-color="${c}"/>
+      <radialGradient id="${gid}" cx="34%" cy="28%" r="72%">
+        <stop offset="0%" stop-color="${bc2}"/>
+        <stop offset="100%" stop-color="${bc}"/>
       </radialGradient>
     </defs>
-    ${glowRing}
+    ${glow}${tail}${wings}
     <!-- shadow -->
-    <ellipse cx="${cx}" cy="${d.h + 6}" rx="${d.bodyRx * 0.85}" ry="6" fill="rgba(0,0,0,0.18)"/>
+    <ellipse cx="${cx}" cy="${dim.h+8}" rx="${dim.bx*.88}" ry="7" fill="rgba(0,0,0,.2)"/>
     <!-- legs -->
-    <rect x="${cx - d.bodyRx*0.55}" y="${bodyY + d.bodyRy*0.7}" width="${d.bodyRx*0.45}" height="${d.legH}" rx="${d.bodyRx*0.22}" fill="${bodyColor}" stroke="#111" stroke-width="1.5"/>
-    <rect x="${cx + d.bodyRx*0.1}"  y="${bodyY + d.bodyRy*0.7}" width="${d.bodyRx*0.45}" height="${d.legH}" rx="${d.bodyRx*0.22}" fill="${bodyColor}" stroke="#111" stroke-width="1.5"/>
+    <rect x="${cx-dim.bx*.6}" y="${by_center+dim.by*.72}" width="${dim.bx*.48}" height="${dim.lh}" rx="${dim.bx*.22}" fill="url(#${gid})" stroke="#111" stroke-width="1.5"/>
+    <rect x="${cx+dim.bx*.12}" y="${by_center+dim.by*.72}" width="${dim.bx*.48}" height="${dim.lh}" rx="${dim.bx*.22}" fill="url(#${gid})" stroke="#111" stroke-width="1.5"/>
     <!-- body -->
-    <ellipse cx="${cx}" cy="${bodyY}" rx="${d.bodyRx}" ry="${d.bodyRy}" fill="${bodyColor}" stroke="#111" stroke-width="2.5"/>
-    <!-- highlight -->
-    <ellipse cx="${cx - d.bodyRx*0.25}" cy="${bodyY - d.bodyRy*0.28}" rx="${d.bodyRx*0.32}" ry="${d.bodyRy*0.22}" fill="#fff" opacity="0.38" transform="rotate(-15,${cx - d.bodyRx*0.25},${bodyY - d.bodyRy*0.28})"/>
+    <ellipse cx="${cx}" cy="${by_center}" rx="${dim.bx}" ry="${dim.by}" fill="url(#${gid})" stroke="#111" stroke-width="2.5"/>
+    <!-- belly -->
+    <ellipse cx="${cx}" cy="${by_center+dim.by*.28}" rx="${dim.bx*.48}" ry="${dim.by*.32}" fill="#fff" opacity=".18"/>
+    <!-- shine -->
+    <ellipse cx="${cx-dim.bx*.27}" cy="${by_center-dim.by*.3}" rx="${dim.bx*.33}" ry="${dim.by*.24}" fill="#fff" opacity=".36" transform="rotate(-16,${cx-dim.bx*.27},${by_center-dim.by*.3})"/>
     <!-- arms -->
-    <ellipse cx="${cx - d.bodyRx - 4}" cy="${bodyY - d.bodyRy*0.1}" rx="${d.bodyRx*0.28}" ry="${d.bodyRy*0.38}" fill="${bodyColor}" stroke="#111" stroke-width="1.5" transform="rotate(-20,${cx - d.bodyRx - 4},${bodyY})"/>
-    <ellipse cx="${cx + d.bodyRx + 4}" cy="${bodyY - d.bodyRy*0.1}" rx="${d.bodyRx*0.28}" ry="${d.bodyRy*0.38}" fill="${bodyColor}" stroke="#111" stroke-width="1.5" transform="rotate(20,${cx + d.bodyRx + 4},${bodyY})"/>
+    <ellipse cx="${cx-dim.bx-5}" cy="${by_center}" rx="${dim.bx*.3}" ry="${dim.by*.4}" fill="url(#${gid})" stroke="#111" stroke-width="1.5" transform="rotate(-22,${cx-dim.bx-5},${by_center})"/>
+    <ellipse cx="${cx+dim.bx+5}" cy="${by_center}" rx="${dim.bx*.3}" ry="${dim.by*.4}" fill="url(#${gid})" stroke="#111" stroke-width="1.5" transform="rotate(22,${cx+dim.bx+5},${by_center})"/>
     <!-- face -->
-    ${deadX}
-    ${mouth}
-    ${crown}
+    ${eyes}${mouth}${crown}
     <!-- cheeks -->
-    <circle cx="${cx-18}" cy="${d.ey+10}" r="7" fill="${ac}" opacity="0.28"/>
-    <circle cx="${cx+18}" cy="${d.ey+10}" r="7" fill="${ac}" opacity="0.28"/>
-    <!-- belly spot -->
-    <ellipse cx="${cx}" cy="${bodyY + d.bodyRy*0.25}" rx="${d.bodyRx*0.45}" ry="${d.bodyRy*0.3}" fill="#fff" opacity="0.18"/>
+    <circle cx="${cx-19}" cy="${dim.ey+12}" r="7" fill="${bac}" opacity=".28"/>
+    <circle cx="${cx+19}" cy="${dim.ey+12}" r="7" fill="${bac}" opacity=".28"/>
   </svg>`;
 }
 
-// ============================================================
-// HATCHING
-// ============================================================
+/* ================================================================
+   HATCH
+================================================================ */
 function tapCreature() {
-  if (state.stage !== 'egg') return;
-  if (state.hatching) return;
+  if (state.stage !== 'egg' || state.hatching || state.dead) return;
   state.hatching = true;
-
-  // Pick random species
   state.species = Math.floor(Math.random() * 3);
-  const sp = SPECIES[state.species];
-
-  // Hatch animation: shake egg
   const wrap = document.getElementById('creature-svg-wrap');
-  wrap.style.animation = 'none';
-  wrap.style.transform = 'scale(1)';
-
-  let shakes = 0;
-  const shakeInterval = setInterval(() => {
-    shakes++;
-    const angle = (Math.random() - 0.5) * 20;
-    wrap.style.transform = `rotate(${angle}deg) scale(1.05)`;
-    if (shakes > 8) {
-      clearInterval(shakeInterval);
-      doHatch(sp);
+  const eggEl = wrap.querySelector('svg');
+  if (eggEl) eggEl.style.animation = 'none';
+  let n = 0;
+  const iv = setInterval(() => {
+    n++;
+    const a = (Math.random()-.5)*22;
+    if (wrap.querySelector('svg')) {
+      wrap.querySelector('svg').style.transform = `rotate(${a}deg) scale(1.06)`;
     }
-  }, 90);
+    if (n > 9) { clearInterval(iv); doHatch(); }
+  }, 85);
 }
 
-function doHatch(sp) {
+function doHatch() {
   const wrap = document.getElementById('creature-svg-wrap');
-  wrap.style.transform = 'scale(1.3)';
-  wrap.style.transition = 'transform 0.3s';
-
-  spawnConfetti(sp.color, 60);
-  spawnFloatText(`✨ ${sp.name} hatched!`, false);
-
+  if (wrap.querySelector('svg')) wrap.querySelector('svg').style.transform = 'scale(1.35)';
+  playTone(523,.12); setTimeout(()=>playTone(659,.12),130); setTimeout(()=>playTone(784,.3),260);
+  const sp = SPECIES[state.species];
+  spawnConfetti(sp.c, 70);
+  spawnFloat('✨ ' + sp.name + ' hatched!', 'sogo');
   setTimeout(() => {
-    state.hatched = true;
-    state.stage = 'baby';
-    state.lastTick = Date.now();
-    saveState();
-
-    wrap.style.transform = '';
-    wrap.style.transition = '';
-    wrap.style.animation = '';
+    state.hatched = true; state.stage = 'baby'; state.lastTick = Date.now();
+    state.hatching = false;
+    saveLocal(); syncToServer();
     renderCreature();
-
-    // Show onboarding if first visit
-    const ob = localStorage.getItem('tamagosol_ob');
-    if (!ob) showOnboarding();
-  }, HATCH_DELAY);
+    if (!localStorage.getItem('tgs_ob')) showOnboarding();
+  }, 900);
 }
 
-// ============================================================
-// ACTIONS
-// ============================================================
-const ACTION_CONFIG = {
-  feed:  { cd: 8000,  statGains: { hunger: 28, energy: 5 },  sogo: 3,  anim: '🍖', floats: ['+28 Hunger', '+3 $SOGO'] },
-  play:  { cd: 10000, statGains: { mood: 30, hashpow: 8 },   sogo: 5,  anim: '🎮', floats: ['+30 Mood', '+5 $SOGO'] },
-  clean: { cd: 12000, statGains: { mood: 15, hashpow: 20 },  sogo: 2,  anim: '🧼', floats: ['+20 Hash', '+2 $SOGO'] },
+/* ================================================================
+   ACTIONS
+================================================================ */
+const ACTIONS = {
+  feed:  {cd:8000,  gains:{hunger:30,energy:6},      sogo:3,  floats:['+30 Hunger','+ $3 SOGO']},
+  play:  {cd:10000, gains:{mood:32,hashpow:9},        sogo:5,  floats:['+32 Mood','+ $5 SOGO']},
+  clean: {cd:12000, gains:{mood:16,hashpow:22},       sogo:2,  floats:['+22 Hash','+ $2 SOGO']},
 };
 
 function doAction(action) {
   if (state.dead) return;
   if (!state.hatched) { tapCreature(); return; }
   if (state.stage === 'egg') return;
-
-  const now = Date.now();
-  if (now < state.cooldowns[action]) return;
-
-  if (action === 'stake') {
-    toggleStake();
-    return;
-  }
-
-  const cfg = ACTION_CONFIG[action];
+  if (action === 'stake') { toggleStake(); return; }
+  const cfg = ACTIONS[action];
   if (!cfg) return;
-
+  const now = Date.now();
+  if (now < (state.cooldowns[action]||0)) return;
   state.cooldowns[action] = now + cfg.cd;
-  for (const [stat, val] of Object.entries(cfg.statGains)) {
-    state.stats[stat] = Math.min(100, state.stats[stat] + val);
-  }
+  for (const [s,v] of Object.entries(cfg.gains)) state.stats[s] = Math.min(100, state.stats[s] + v);
   state.sogo += cfg.sogo;
-
-  // Animations
-  const btn = document.getElementById('btn-' + action);
-  addTapRing(btn);
-  cfg.floats.forEach((txt, i) => setTimeout(() => spawnFloatText(txt, i > 0), i * 180));
-  bounceCreature();
-  saveState();
+  addTapRing(document.getElementById('btn-'+action));
+  cfg.floats.forEach((t,i) => setTimeout(()=>spawnFloat(t, i===0?'stat':'sogo'), i*160));
+  bounceCreature(); playAction();
+  saveLocal();
+  if (Date.now() - lastSyncTime > 30000) syncToServer();
 }
 
 function toggleStake() {
   if (state.staking) {
-    // Unstake: collect
-    const earned = STAKE_EARN_PER_SEC * (state.stats.hashpow / 100) * ((Date.now() - state.stakeStartTime) / 1000);
+    const earned = STAKE_RATE * (state.stats.hashpow/100) * ((Date.now()-(state.stakeStartTime||Date.now()))/1000);
     state.sogo += earned;
-    state.staking = false;
-    state.stakeStartTime = null;
-    spawnFloatText(`+${Math.floor(earned)} $SOGO ⛏`, false);
+    state.staking = false; state.stakeStartTime = null;
+    spawnFloat('+' + Math.floor(earned) + ' $SOGO ⛏', 'sogo');
+    showToast('Unstaked! Earned $' + Math.floor(earned) + ' SOGO');
   } else {
-    state.staking = true;
-    state.stakeStartTime = Date.now();
-    spawnFloatText('⛏ Staking...', false);
+    state.staking = true; state.stakeStartTime = Date.now();
+    spawnFloat('⛏ Mining...', 'stat');
+    showToast('Staking started! $SOGO is accumulating...');
   }
   addTapRing(document.getElementById('btn-stake'));
-  saveState();
+  playAction(); saveLocal();
+  if (Date.now() - lastSyncTime > 10000) syncToServer();
 }
 
-// ============================================================
-// EVOLUTIONS
-// ============================================================
-function triggerEvolution(newStage) {
-  const oldStage = state.stage;
-  state.stage = newStage;
-  state.evolutionCount++;
-  saveState();
-
-  // Flash effect
+/* ================================================================
+   EVOLUTION
+================================================================ */
+function triggerEvolution(next) {
+  state.stage = next; state.evolutionCount++;
+  saveLocal(); syncToServer();
   const ov = document.getElementById('evo-overlay');
-  ov.classList.add('flash');
-  ov.addEventListener('animationend', () => { ov.classList.remove('flash'); ov.style.display = 'none'; }, { once: true });
-  ov.style.display = 'block';
-
-  spawnConfetti(SPECIES[state.species].color, 80);
-  const name = STAGE_NAMES[newStage] || newStage;
-  setTimeout(() => spawnFloatText(`✨ Evolved → ${name}!`, false), 400);
-
-  renderCreature();
+  ov.classList.add('flash'); ov.style.display = 'block';
+  ov.addEventListener('animationend', ()=>{ov.classList.remove('flash');ov.style.display='none'},{once:true});
+  spawnConfetti(SPECIES[state.species||0].c, 90);
+  setTimeout(()=>{ spawnFloat('✨ Evolved → ' + (STAGE_NAMES[next]||next) + '!', 'sogo'); }, 450);
+  setTimeout(()=>renderCreature(), 200);
+  showToast('🎉 Evolution! → ' + (STAGE_NAMES[next]||next));
 }
 
-// ============================================================
-// VISUAL HELPERS
-// ============================================================
+/* ================================================================
+   VISUAL HELPERS
+================================================================ */
 function bounceCreature() {
-  const wrap = document.getElementById('creature-svg-wrap');
-  wrap.style.animation = 'none';
-  wrap.style.transform = 'scale(1.18) translateY(-10px)';
-  setTimeout(() => {
-    wrap.style.transform = '';
-    wrap.style.animation = '';
-    setTimeout(() => { wrap.style.animation = 'idle-bob 2.8s ease-in-out infinite'; }, 50);
-  }, 280);
+  const w = document.getElementById('creature-svg-wrap');
+  w.style.animation = 'none';
+  w.style.transform = 'scale(1.2) translateY(-12px)';
+  setTimeout(()=>{
+    w.style.transform = '';
+    setTimeout(()=>{ w.style.animation = 'idle-bob 2.8s ease-in-out infinite'; }, 60);
+  }, 300);
 }
-
 function addTapRing(btn) {
   if (!btn) return;
-  const ring = document.createElement('div');
-  ring.className = 'tap-ring';
-  btn.appendChild(ring);
-  ring.addEventListener('animationend', () => ring.remove());
+  const r = document.createElement('div'); r.className = 'tap-ring';
+  btn.appendChild(r); r.addEventListener('animationend',()=>r.remove());
 }
-
-function spawnFloatText(text, isStat) {
-  const stage = document.getElementById('creature-stage');
+function spawnFloat(text, type='sogo') {
+  const s = document.getElementById('creature-stage'); if (!s) return;
   const el = document.createElement('div');
-  el.className = 'float-text' + (isStat ? ' stat-gain' : '');
+  el.className = 'float-text ' + type;
   el.textContent = text;
-  el.style.top = (20 + Math.random() * 30) + '%';
-  stage.appendChild(el);
-  el.addEventListener('animationend', () => el.remove());
+  el.style.top = (18 + Math.random()*28) + '%';
+  s.appendChild(el); el.addEventListener('animationend',()=>el.remove());
 }
-
-function spawnConfetti(color, count) {
-  const container = document.getElementById('confetti-container');
-  const colors = [color, '#fff', '#FFC93C', '#FF4D6D', '#22D3EE'];
-  for (let i = 0; i < count; i++) {
-    const el = document.createElement('div');
-    el.className = 'confetti-piece';
-    el.style.left = (10 + Math.random() * 80) + '%';
-    el.style.top  = (Math.random() * 30) + '%';
-    el.style.background = colors[Math.floor(Math.random() * colors.length)];
-    el.style.width = el.style.height = (6 + Math.random() * 8) + 'px';
-    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-    el.style.animationDelay = (Math.random() * 0.5) + 's';
-    el.style.animationDuration = (1.2 + Math.random() * 1.2) + 's';
-    container.appendChild(el);
-    el.addEventListener('animationend', () => el.remove());
+function spawnConfetti(color, count=60) {
+  const c = document.getElementById('confetti-container');
+  const cols = [color,'#fff','#FFC93C','#FF4D6D','#22D3EE'];
+  for (let i=0;i<count;i++) {
+    const el = document.createElement('div'); el.className = 'confetti-piece';
+    el.style.left = (8+Math.random()*84)+'%';
+    el.style.top  = (Math.random()*20)+'%';
+    el.style.background = cols[Math.floor(Math.random()*cols.length)];
+    const sz = 6+Math.random()*8; el.style.width = el.style.height = sz+'px';
+    el.style.borderRadius = Math.random()>.5?'50%':'3px';
+    el.style.animationDelay = (Math.random()*.6)+'s';
+    el.style.animationDuration = (1.3+Math.random()*1.2)+'s';
+    c.appendChild(el); el.addEventListener('animationend',()=>el.remove());
   }
 }
-
-// ============================================================
-// SOUND (Web Audio API)
-// ============================================================
-let audioCtx = null;
-function getAudioCtx() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  return audioCtx;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
 }
-function playTone(freq, dur, type = 'sine', vol = 0.18) {
-  if (!soundEnabled) return;
+
+/* ================================================================
+   SOUND
+================================================================ */
+let actx = null;
+function getCtx(){ if(!actx) actx=new(window.AudioContext||window.webkitAudioContext)(); return actx; }
+function playTone(f,d,type='sine',vol=.18){
+  if(!soundOn) return;
+  try{
+    const ctx=getCtx(); const o=ctx.createOscillator(); const g=ctx.createGain();
+    o.connect(g); g.connect(ctx.destination); o.type=type; o.frequency.value=f;
+    g.gain.setValueAtTime(vol,ctx.currentTime); g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+d);
+    o.start(); o.stop(ctx.currentTime+d);
+  }catch(e){}
+}
+function playAction(){ playTone(880,.07,'triangle',.1); setTimeout(()=>playTone(1046,.07,'triangle',.1),80); }
+function toggleSound(){
+  soundOn=!soundOn;
+  document.getElementById('nav-sound').textContent = soundOn?'🔊':'🔇';
+}
+
+/* ================================================================
+   MODALS & ONBOARDING
+================================================================ */
+function openModal(id){ document.getElementById('modal-'+id).style.display='flex'; }
+function closeModal(id){ document.getElementById('modal-'+id).style.display='none'; }
+function closeModalIfBackdrop(e,id){ if(e.target===e.currentTarget) closeModal(id); }
+
+function showOnboarding(){
+  onboardingStep=0; document.getElementById('onboarding').style.display='flex';
+  updateOB();
+}
+function updateOB(){
+  const s=OB_STEPS[onboardingStep];
+  document.getElementById('ob-title').textContent=s.title;
+  document.getElementById('ob-desc').textContent=s.desc;
+  for(let i=0;i<3;i++) document.getElementById('ob-dot-'+i).classList.toggle('active',i===onboardingStep);
+  document.getElementById('ob-next').textContent=onboardingStep===2?"Let's go! 🚀":'Next →';
+  for(const id of ['btn-feed','btn-play','btn-stake','btn-clean']) document.getElementById(id).classList.remove('ob-highlight');
+  const hl=[null,'btn-feed','btn-stake'][onboardingStep];
+  if(hl) document.getElementById(hl).classList.add('ob-highlight');
+}
+function nextOnboarding(){ if(++onboardingStep>=3) skipOnboarding(); else updateOB(); }
+function skipOnboarding(){
+  document.getElementById('onboarding').style.display='none';
+  localStorage.setItem('tgs_ob','1');
+  for(const id of ['btn-feed','btn-play','btn-stake','btn-clean']) document.getElementById(id).classList.remove('ob-highlight');
+}
+
+/* ================================================================
+   AUTH
+================================================================ */
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('tab-register').classList.toggle('active', tab==='register');
+  document.getElementById('field-username').style.display = tab==='register' ? 'flex' : 'none';
+  document.getElementById('inp-password').autocomplete = tab==='login' ? 'current-password' : 'new-password';
+  document.getElementById('auth-submit-btn').textContent = tab==='login' ? 'Sign In' : 'Create Account 🚀';
+  clearAuthError();
+}
+function clearAuthError(){ document.getElementById('auth-error').classList.remove('visible'); }
+function showAuthError(msg){ const e=document.getElementById('auth-error'); e.textContent=msg; e.classList.add('visible'); }
+
+async function submitAuth() {
+  const btn = document.getElementById('auth-submit-btn');
+  const email = document.getElementById('inp-email').value.trim();
+  const password = document.getElementById('inp-password').value;
+  clearAuthError();
+  if (!email || !password) { showAuthError('Please fill in all fields.'); return; }
+  btn.disabled = true; btn.textContent = 'Loading...';
   try {
-    const ctx = getAudioCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, ctx.currentTime);
-    gain.gain.setValueAtTime(vol, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + dur);
-  } catch(e) {}
-}
-function playHatch() {
-  playTone(523, 0.12); setTimeout(() => playTone(659, 0.12), 130); setTimeout(() => playTone(784, 0.25), 260);
-}
-function playAction() {
-  playTone(880, 0.08, 'triangle', 0.12); setTimeout(() => playTone(1046, 0.08, 'triangle', 0.12), 90);
-}
-
-// ============================================================
-// MODAL
-// ============================================================
-function openModal(id) {
-  document.getElementById('modal-' + id).style.display = 'flex';
-}
-function closeModal(id) {
-  document.getElementById('modal-' + id).style.display = 'none';
-}
-function closeModalIfBackdrop(e, id) {
-  if (e.target === e.currentTarget) closeModal(id);
-}
-
-// ============================================================
-// ONBOARDING
-// ============================================================
-function showOnboarding() {
-  onboardingStep = 0;
-  document.getElementById('onboarding').style.display = 'flex';
-  updateOnboardingUI();
-}
-
-function updateOnboardingUI() {
-  const step = ONBOARDING_STEPS[onboardingStep];
-  document.getElementById('ob-title').textContent = step.title;
-  document.getElementById('ob-desc').textContent  = step.desc;
-  for (let i = 0; i < 3; i++) {
-    document.getElementById('ob-dot-' + i).classList.toggle('active', i === onboardingStep);
-  }
-  const nextBtn = document.getElementById('ob-next-btn');
-  nextBtn.textContent = onboardingStep === 2 ? 'Let\'s go! 🚀' : 'Next →';
-  // Highlight relevant buttons
-  const highlights = [null, 'btn-feed', 'btn-stake'];
-  for (const cls of ['btn-feed','btn-play','btn-stake','btn-clean']) {
-    document.getElementById(cls).classList.remove('ob-highlight');
-  }
-  if (highlights[onboardingStep]) {
-    document.getElementById(highlights[onboardingStep]).classList.add('ob-highlight');
+    let url, body;
+    if (currentTab === 'login') {
+      url = API('/auth/login'); body = {email, password};
+    } else {
+      const username = document.getElementById('inp-username').value.trim();
+      if (!username) { showAuthError('Username is required.'); btn.disabled=false; btn.textContent='Create Account 🚀'; return; }
+      url = API('/auth/register'); body = {username, email, password};
+    }
+    const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const data = await r.json();
+    if (!r.ok) { showAuthError(data.error || 'Something went wrong'); btn.disabled=false; btn.textContent=currentTab==='login'?'Sign In':'Create Account 🚀'; return; }
+    localStorage.setItem(TOKEN_KEY, data.token);
+    user = data.user;
+    await startGame(true);
+  } catch(e) {
+    showAuthError('Connection failed. Playing as guest...');
+    btn.disabled=false; btn.textContent=currentTab==='login'?'Sign In':'Create Account 🚀';
   }
 }
 
-function nextOnboarding() {
-  onboardingStep++;
-  if (onboardingStep >= ONBOARDING_STEPS.length) {
-    skipOnboarding();
+async function playAsGuest() {
+  user = null;
+  await startGame(false);
+}
+
+function confirmLogout() {
+  if (confirm('Log out? Progress will be saved to your account.')) {
+    if (user) syncToServer();
+    localStorage.removeItem(TOKEN_KEY);
+    user = null;
+    showScreen('auth');
+  }
+}
+
+/* ================================================================
+   SCREEN MANAGEMENT
+================================================================ */
+function showScreen(id) {
+  for (const s of document.querySelectorAll('.screen')) s.classList.add('hidden');
+  const el = document.getElementById('screen-' + id);
+  if (el) { el.classList.remove('hidden'); el.scrollTop = 0; }
+}
+
+/* ================================================================
+   GAME START
+================================================================ */
+async function startGame(fromServer) {
+  showScreen('game');
+  // Update nav
+  const avatarEl = document.getElementById('nav-avatar');
+  const usernameEl = document.getElementById('nav-username');
+  if (user) {
+    const sp = SPECIES[user.avatarSpecies || 0];
+    avatarEl.textContent = ['🟡','🔵','🔴'][user.avatarSpecies||0];
+    avatarEl.style.background = `linear-gradient(135deg,${sp.c2},${sp.c})`;
+    usernameEl.textContent = user.username;
   } else {
-    updateOnboardingUI();
+    avatarEl.textContent = '👤';
+    avatarEl.style.background = 'linear-gradient(135deg,#9CA3AF,#6B7280)';
+    usernameEl.textContent = 'Guest';
   }
-}
-
-function skipOnboarding() {
-  document.getElementById('onboarding').style.display = 'none';
-  localStorage.setItem('tamagosol_ob', '1');
-  for (const cls of ['btn-feed','btn-play','btn-stake','btn-clean']) {
-    document.getElementById(cls).classList.remove('ob-highlight');
+  if (fromServer && user) {
+    const loaded = await loadFromServer();
+    if (!loaded) loadLocal();
+  } else {
+    loadLocal();
   }
-}
-
-// ============================================================
-// SOUND TOGGLE
-// ============================================================
-function toggleSound() {
-  soundEnabled = !soundEnabled;
-  document.getElementById('sound-btn').textContent = soundEnabled ? '🔊' : '🔇';
-}
-
-// ============================================================
-// RESET
-// ============================================================
-function resetGame(silent = false) {
-  state = {
-    hatched: false, species: null, stage: 'egg',
-    stats: { hunger: 100, energy: 100, mood: 100, hashpow: 100 },
-    sogo: 0, ageSeconds: 0, staking: false, stakeStartTime: null,
-    lastTick: Date.now(), cooldowns: { feed:0, play:0, stake:0, clean:0 },
-    evolutionCount: 0, dead: false,
-  };
-  document.getElementById('death-screen').classList.remove('visible');
-  saveState();
+  if (state.dead) document.getElementById('death-screen').classList.add('visible');
   renderCreature();
-  document.getElementById('creature-name-tag').textContent = 'Tap to hatch!';
-  document.getElementById('mood-emoji').textContent = '🥚';
-  for (const s of ['hunger','energy','mood','hashpow']) {
-    const mapId = { hunger:'hunger', energy:'energy', mood:'mood', hashpow:'hash' };
-    const bar = document.getElementById(mapId[s] + '-bar');
-    const val = document.getElementById(mapId[s] + '-val');
-    if (bar) bar.style.width = '100%';
-    if (val) val.textContent = '100';
-  }
-  if (!silent) spawnConfetti('#FFC93C', 40);
-}
-
-// ============================================================
-// INIT
-// ============================================================
-function init() {
-  loadState();
-  renderCreature();
-
   if (!state.hatched) {
     document.getElementById('creature-name-tag').textContent = 'Tap to hatch!';
     document.getElementById('mood-emoji').textContent = '🥚';
   }
-
-  if (state.dead) {
-    document.getElementById('death-screen').classList.add('visible');
-  }
-
   lastFrame = 0;
-  animFrame = requestAnimationFrame(gameLoop);
-
-  // Auto-save every 10s
-  setInterval(saveState, 10000);
+  requestAnimationFrame(gameLoop);
+  setInterval(()=>{ saveLocal(); if(user) syncToServer(); }, 30000);
 }
 
-document.addEventListener('DOMContentLoaded', init);
+/* ================================================================
+   RESET
+================================================================ */
+function resetGame() {
+  state = defaultState();
+  document.getElementById('death-screen').classList.remove('visible');
+  saveLocal(); syncToServer();
+  renderCreature();
+  document.getElementById('creature-name-tag').textContent = 'Tap to hatch!';
+  document.getElementById('mood-emoji').textContent = '🥚';
+  for (const s of ['hunger','energy','mood','hash']) {
+    const bar = document.getElementById(s+'-bar'); if(bar) bar.style.width='100%';
+    const val = document.getElementById(s+'-val'); if(val) val.textContent='100';
+  }
+  spawnConfetti('#FFC93C', 50);
+}
+
+/* ================================================================
+   INTRO
+================================================================ */
+let introProgress = 0;
+let introInterval = null;
+
+function runIntro() {
+  const fill = document.getElementById('loader-fill');
+  introInterval = setInterval(()=>{
+    introProgress = Math.min(100, introProgress + 1.4);
+    if (fill) fill.style.width = introProgress + '%';
+    if (introProgress >= 100) {
+      clearInterval(introInterval);
+      finishIntro();
+    }
+  }, 35);
+}
+
+async function finishIntro() {
+  // Check for existing token → skip auth
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (token) {
+    try {
+      const r = await fetch(API('/auth/me'),{headers:{'Authorization':'Bearer '+token}});
+      if (r.ok) {
+        const data = await r.json();
+        user = data.user;
+        showScreen('auth'); // briefly show auth then jump
+        await startGame(true); return;
+      }
+    } catch(e){}
+    localStorage.removeItem(TOKEN_KEY);
+  }
+  showScreen('auth');
+}
+
+function skipIntro() {
+  clearInterval(introInterval);
+  const fill = document.getElementById('loader-fill');
+  if (fill) fill.style.width = '100%';
+  setTimeout(finishIntro, 150);
+}
+
+/* ================================================================
+   BOOT
+================================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  showScreen('intro');
+  runIntro();
+  // Ensure egg SVG is rendered on load
+  renderCreature();
+});
 </script>
 </body>
 </html>
