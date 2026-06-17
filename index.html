@@ -94,30 +94,30 @@ body::before{
 
 /* ================================================================ AUTH */
 #screen-auth{
-  background:linear-gradient(165deg,#FF7700 0%,#BB2000 52%,#3A0600 100%);
-  z-index:50;align-items:center;justify-content:flex-start;
-  padding:40px 16px 20px;overflow-y:auto;
+  background:radial-gradient(ellipse at 50% 30%,#1A0C05 0%,#0D0804 55%,#080503 100%);
+  z-index:50;align-items:center;justify-content:center;
+  padding:24px 16px 28px;overflow-y:auto;
 }
-.auth-logo-mini{display:flex;flex-direction:column;align-items:center;margin-bottom:22px}
+.auth-logo-mini{display:flex;flex-direction:column;align-items:center;margin-bottom:20px}
 .auth-logo-mini .logo-text{font-size:28px;margin-top:10px}
-.auth-card{width:100%;max-width:430px;background:#fff;border:2px solid rgba(0,0,0,.1);border-radius:28px;box-shadow:var(--sh);overflow:hidden}
+.auth-card{width:100%;max-width:400px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:24px;box-shadow:0 8px 40px rgba(0,0,0,.5);overflow:hidden;backdrop-filter:blur(20px)}
 .auth-tabs{display:grid;grid-template-columns:1fr 1fr}
-.auth-tab{padding:15px 10px;text-align:center;font-family:'Fredoka',sans-serif;font-weight:600;font-size:15px;cursor:pointer;border-bottom:2px solid transparent;color:#bbb;transition:color .18s,border-color .18s,background .18s;user-select:none;letter-spacing:.04em}
-.auth-tab.active{color:#111;border-color:var(--gold);background:#FFFCF0}
-.auth-form{padding:22px 20px 26px;display:flex;flex-direction:column;gap:13px}
+.auth-tab{padding:14px 10px;text-align:center;font-family:'Fredoka',sans-serif;font-weight:600;font-size:15px;cursor:pointer;border-bottom:1.5px solid transparent;color:rgba(255,255,255,.3);transition:color .18s,border-color .18s,background .18s;user-select:none;letter-spacing:.05em}
+.auth-tab.active{color:#fff;border-color:#FF8C00;background:rgba(255,140,0,.08)}
+.auth-form{padding:20px 20px 24px;display:flex;flex-direction:column;gap:12px}
 .f-wrap{display:flex;flex-direction:column;gap:4px}
-.f-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:#999;font-family:'Outfit',sans-serif}
-.f-input{height:48px;border:2px solid #e5e5e5;border-radius:12px;padding:0 14px;font-size:15px;font-family:'Outfit',sans-serif;font-weight:500;color:#111;background:#fafafa;outline:none;transition:border-color .2s,box-shadow .2s}
-.f-input:focus{border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px var(--gold-glow)}
-.f-input::placeholder{color:#ccc}
-.auth-btn{height:52px;border-radius:14px;border:none;color:#fff;font-family:'Fredoka',sans-serif;font-weight:700;font-size:17px;cursor:pointer;box-shadow:0 4px 20px rgba(255,80,0,.45);transition:transform .12s var(--ease-b),box-shadow .12s;background:linear-gradient(135deg,#FF9500,#FF4800);letter-spacing:.06em}
+.f-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:rgba(255,255,255,.4);font-family:'Outfit',sans-serif}
+.f-input{height:48px;border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:0 14px;font-size:15px;font-family:'Outfit',sans-serif;font-weight:500;color:#fff;background:rgba(255,255,255,.07);outline:none;transition:border-color .2s,box-shadow .2s}
+.f-input:focus{border-color:rgba(255,180,0,.6);background:rgba(255,255,255,.1);box-shadow:0 0 0 3px rgba(255,140,0,.15)}
+.f-input::placeholder{color:rgba(255,255,255,.2)}
+.auth-btn{height:52px;border-radius:14px;border:none;color:#fff;font-family:'Fredoka',sans-serif;font-weight:700;font-size:17px;cursor:pointer;box-shadow:0 6px 24px rgba(255,100,0,.5);transition:transform .12s var(--ease-b),box-shadow .12s;background:linear-gradient(135deg,#FFA500,#FF4500);letter-spacing:.06em}
 .auth-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #111}
 .auth-btn:disabled{opacity:.6;cursor:wait}
-.auth-btn.gray{background:linear-gradient(135deg,#6B7280,#374151)}
-.auth-err{font-size:13px;color:#DC2626;font-weight:600;background:#FEF2F2;border:1.5px solid #FECACA;border-radius:10px;padding:10px 14px;display:none}
+.auth-btn.gray{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.12)}
+.auth-err{font-size:13px;color:#FF6B6B;font-weight:600;background:rgba(220,38,38,.12);border:1.5px solid rgba(220,38,38,.3);border-radius:10px;padding:10px 14px;display:none}
 .auth-err.on{display:block}
-.auth-div{text-align:center;font-size:12px;color:#ccc;font-weight:600;position:relative}
-.auth-div::before,.auth-div::after{content:'';position:absolute;top:50%;width:37%;height:1px;background:#eee}
+.auth-div{text-align:center;font-size:12px;color:rgba(255,255,255,.25);font-weight:500;position:relative;font-family:'Outfit',sans-serif;letter-spacing:.08em}
+.auth-div::before,.auth-div::after{content:'';position:absolute;top:50%;width:37%;height:1px;background:rgba(255,255,255,.1)}
 .auth-div::before{left:0}.auth-div::after{right:0}
 
 /* ================================================================ GAME SCREEN */
@@ -524,7 +524,9 @@ body::before{
   <!-- ═══════════════════════════ AUTH ════════════════════════════ -->
   <div class="screen hidden" id="screen-auth">
     <div class="auth-logo-mini">
-      <img src="logo_nobg.png" alt="TamagoSOL" style="width:88px;height:88px;object-fit:contain;mix-blend-mode:screen;filter:brightness(1.1)">
+      <img src="logo_nobg.png" alt="TamagoSOL" style="width:96px;height:96px;object-fit:contain;filter:brightness(1.05) drop-shadow(0 4px 24px rgba(255,140,0,.3))">
+      <div style="margin-top:8px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:18px;color:rgba(255,255,255,.9);letter-spacing:.06em">TAMAGOSOL</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:10px;color:rgba(255,200,80,.5);letter-spacing:.22em;text-transform:uppercase;margin-top:2px">raise · stake · evolve</div>
     </div>
     <div class="auth-card">
       <div class="auth-tabs">
