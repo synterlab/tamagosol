@@ -39,10 +39,10 @@ body::before{
 /* ================================================================ SCREENS */
 .screen{
   position:absolute;inset:0;display:flex;flex-direction:column;
-  transition:opacity .38s var(--ease-s),transform .38s var(--ease-s);
-  overflow:hidden;
+  transition:opacity .42s var(--ease-s),transform .42s var(--ease-s);
+  overflow:hidden;will-change:transform,opacity;
 }
-.screen.hidden{opacity:0;pointer-events:none;transform:scale(.97) translateY(8px)}
+.screen.hidden{opacity:0;pointer-events:none;transform:scale(.96) translateY(12px)}
 
 /* ================================================================ INTRO */
 #screen-intro{
@@ -131,8 +131,14 @@ body::before{
 
 /* TAB CONTENT */
 #tab-content{flex:1;overflow:hidden;position:relative}
-.tab-panel{position:absolute;inset:0;display:flex;flex-direction:column;overflow-y:auto;transition:opacity .25s var(--ease-s),transform .25s var(--ease-s)}
-.tab-panel.hidden{opacity:0;pointer-events:none;transform:translateY(6px)}
+.tab-panel{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth;
+  transition:opacity .3s var(--ease-s),transform .3s var(--ease-s);
+  will-change:transform,opacity;
+}
+.tab-panel.hidden{opacity:0;pointer-events:none;transform:translateY(10px) scale(.99)}
 
 /* ── PLAY TAB ── */
 #stats-card{
@@ -146,7 +152,7 @@ body::before{
 .stat-num{font-family:'Nunito',sans-serif;font-weight:900;font-size:12px;transition:color .3s}
 .stat-num.danger{color:#DC2626}
 .sbar{height:9px;background:#F3F4F6;border-radius:99px;overflow:hidden;border:1.5px solid #E9ECEF}
-.sbar-fill{height:100%;border-radius:99px;transition:width .55s var(--ease-s)}
+.sbar-fill{height:100%;border-radius:99px;transition:width .65s cubic-bezier(.4,0,.2,1),filter .4s ease}
 .sbar-fill.hunger{background:linear-gradient(90deg,#FF8C00,#FFD23F)}
 .sbar-fill.energy{background:linear-gradient(90deg,#818CF8,#22D3EE)}
 .sbar-fill.mood  {background:linear-gradient(90deg,#FF4D6D,#F472B6)}
@@ -292,7 +298,7 @@ body::before{
 .shop-buy-btn.owned{background:linear-gradient(135deg,#10B981,#059669)}
 
 /* ── PROFILE TAB ── */
-#tab-profile{padding:12px 12px 20px}
+#tab-profile{padding:12px 12px 24px}
 .prof-card{background:rgba(255,255,255,.97);border:2.5px solid #111;border-radius:22px;padding:20px;margin-bottom:12px;box-shadow:var(--sh)}
 .prof-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
 .prof-avatar{width:58px;height:58px;border-radius:50%;border:3px solid #111;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
@@ -303,7 +309,7 @@ body::before{
 .prof-stat-val{font-family:'Nunito',sans-serif;font-weight:900;font-size:18px;color:#111}
 .prof-stat-lbl{font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.06em}
 .ach-title{font-family:'Nunito',sans-serif;font-weight:900;font-size:17px;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.3);margin-bottom:9px;padding:0 2px}
-.ach-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ach-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
 .ach-item{
   background:rgba(255,255,255,.97);border:2.5px solid #111;border-radius:16px;
   padding:12px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;
@@ -314,6 +320,31 @@ body::before{
 .ach-emoji{font-size:28px;line-height:1}
 .ach-name{font-family:'Nunito',sans-serif;font-weight:900;font-size:11px;line-height:1.3}
 .ach-desc{font-size:10px;color:#888;line-height:1.4}
+
+/* builder card */
+.builder-card{
+  background:rgba(255,255,255,.97);border:2.5px solid #111;border-radius:20px;
+  padding:18px 16px;box-shadow:var(--sh);display:flex;flex-direction:column;align-items:center;gap:14px;
+}
+.builder-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#bbb}
+.builder-links{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%}
+.builder-x{
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  background:#000;color:#fff;border:2px solid #111;border-radius:12px;
+  padding:10px 20px;text-decoration:none;width:100%;
+  font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;
+  transition:transform .18s var(--ease-b),background .15s;
+  box-shadow:0 3px 0 #333;
+}
+.builder-x:active{transform:translateY(2px);box-shadow:0 1px 0 #333}
+.builder-x-icon{width:18px;height:18px;fill:#fff;flex-shrink:0}
+.builder-orynth{
+  display:block;border-radius:12px;overflow:hidden;border:2px solid #e5e5e5;
+  transition:transform .2s var(--ease-b),box-shadow .2s;
+  box-shadow:0 3px 10px rgba(0,0,0,.1);
+}
+.builder-orynth:active{transform:scale(.97)}
+.builder-orynth img{display:block;width:100%;max-width:220px;height:auto}
 
 /* ================================================================ BOTTOM NAV */
 #bottom-nav{
@@ -614,7 +645,14 @@ body::before{
             <button class="pcbtn" onclick="openModal('about')">ℹ</button>
           </div>
         </div>
-        <div style="text-align:center;padding:0 12px 8px;font-size:10px;color:rgba(255,255,255,.25);font-weight:700;letter-spacing:.1em">tamagosol.fun</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:2px 12px 8px">
+          <a href="https://x.com/AstridHolmx" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:5px;text-decoration:none;opacity:.38;transition:opacity .2s" onmouseenter="this.style.opacity='.7'" onmouseleave="this.style.opacity='.38'">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.741l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <span style="font-size:10px;font-weight:700;color:#fff;letter-spacing:.06em">@AstridHolmx</span>
+          </a>
+          <span style="font-size:10px;color:rgba(255,255,255,.18);font-weight:700">·</span>
+          <a href="https://orynth.dev/projects/tamagosol" target="_blank" rel="noopener" style="font-size:10px;font-weight:700;color:rgba(255,255,255,.38);letter-spacing:.1em;text-decoration:none;transition:opacity .2s" onmouseenter="this.style.opacity='.7'" onmouseleave="this.style.opacity='1'">tamagosol.fun</a>
+        </div>
       </div>
 
       <!-- ──── LEADERBOARD ──── -->
@@ -650,6 +688,19 @@ body::before{
         </div>
         <div class="ach-title">🏅 Achievements</div>
         <div class="ach-grid" id="ach-grid"></div>
+
+        <div class="builder-card">
+          <div class="builder-label">✦ Built by</div>
+          <div class="builder-links">
+            <a class="builder-x" href="https://x.com/AstridHolmx" target="_blank" rel="noopener">
+              <svg class="builder-x-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.741l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              @AstridHolmx
+            </a>
+            <a class="builder-orynth" href="https://orynth.dev/projects/tamagosol" target="_blank" rel="noopener">
+              <img src="https://orynth.dev/api/badge/tamagosol?theme=light&style=default" alt="Featured on Orynth" width="220" height="68">
+            </a>
+          </div>
+        </div>
       </div>
 
     </div><!-- /tab-content -->
@@ -703,6 +754,16 @@ body::before{
     <div class="modal-row"><div class="modal-ico">🪙</div><div class="modal-txt"><strong>What is $SOGO?</strong><span>$SOGO is a purely fictional in-game token. Zero real-world value. Not a financial product.</span></div></div>
     <div class="modal-row"><div class="modal-ico">⛏</div><div class="modal-txt"><strong>Hash Power</strong><span>Your pet's mining ability. Higher Hash Power = faster $SOGO while staking.</span></div></div>
     <div class="modal-row"><div class="modal-ico">🌍</div><div class="modal-txt"><strong>tamagosol.fun</strong><span>Pure browser game. No wallet, no real crypto. Just tap and have fun!</span></div></div>
+    <div style="margin-top:6px;padding-top:16px;border-top:1.5px solid #F3F4F6;display:flex;flex-direction:column;align-items:center;gap:10px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#bbb">Built by</div>
+      <a href="https://x.com/AstridHolmx" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:8px;background:#000;color:#fff;border:2px solid #111;border-radius:10px;padding:9px 18px;text-decoration:none;font-family:'Nunito',sans-serif;font-weight:900;font-size:14px;box-shadow:0 3px 0 #333;transition:transform .15s">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.741l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        @AstridHolmx
+      </a>
+      <a href="https://orynth.dev/projects/tamagosol" target="_blank" rel="noopener" style="display:block;border-radius:10px;overflow:hidden;border:1.5px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,.08)">
+        <img src="https://orynth.dev/api/badge/tamagosol?theme=light&style=default" alt="Featured on Orynth" width="200" height="62" style="display:block">
+      </a>
+    </div>
   </div>
 </div>
 
