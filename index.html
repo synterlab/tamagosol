@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Tamagosol – Raise Your Crypto Pet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ========== RESET & BASE ========== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #FFC93C;
+    --gold-dark: #E5A800;
+    --cyan: #22D3EE;
+    --coral: #FF4D6D;
+    --bg-top: #FF8C00;
+    --bg-bot: #8B1A1A;
+    --white: #FFFFFF;
+    --shadow: rgba(0,0,0,0.18);
+    --card-radius: 20px;
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'Nunito Sans', sans-serif;
+    background: linear-gradient(160deg, var(--bg-top) 0%, #CC3300 55%, var(--bg-bot) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: #222;
+  }
+
+  /* Hex pattern background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34zm0-6l22-13V19L28 6 6 19v28z' fill='%23ffffff' fill-opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ========== LAYOUT ========== */
+  #app {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 14px 18px;
+  }
+
+  /* ========== CARD ========== */
+  .card {
+    background: #fff;
+    border: 2.5px solid #111;
+    border-radius: var(--card-radius);
+    box-shadow: 0 4px 18px var(--shadow), 0 1px 3px rgba(0,0,0,0.1);
+    padding: 14px 16px;
+  }
+
+  /* ========== TOP BAR ========== */
+  #topbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  #sound-btn {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    border: 2.5px solid #111;
+    background: #fff;
+    box-shadow: 0 2px 8px var(--shadow);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: transform 0.15s var(--ease-bounce), box-shadow 0.15s;
+    flex-shrink: 0;
+  }
+  #sound-btn:active { transform: scale(0.88); }
+
+  #stats-card {
+    flex: 1;
+    padding: 10px 14px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 12px;
+  }
+
+  .stat-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #666;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .stat-bar-bg {
+    height: 8px;
+    background: #eee;
+    border-radius: 99px;
+    overflow: hidden;
+    border: 1.5px solid #ddd;
+  }
+
+  .stat-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.5s var(--ease-smooth);
+  }
+  .stat-bar-fill.hunger  { background: linear-gradient(90deg, #FF8C00, #FFD23F); }
+  .stat-bar-fill.energy  { background: linear-gradient(90deg, #22D3EE, #818CF8); }
+  .stat-bar-fill.mood    { background: linear-gradient(90deg, #FF4D6D, #F472B6); }
+  .stat-bar-fill.hashpow { background: linear-gradient(90deg, #10B981, #22D3EE); }
+
+  /* ========== SOGO PILL ========== */
+  #sogo-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #fff;
+    border: 2.5px solid #111;
+    border-radius: 99px;
+    padding: 6px 14px 6px 10px;
+    box-shadow: 0 2px 8px var(--shadow);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  #sogo-icon { font-size: 18px; line-height: 1; }
+  #sogo-amount {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 15px;
+    color: #111;
+    transition: color 0.3s;
+  }
+  #sogo-label { font-size: 11px; font-weight: 700; color: #999; }
+
+  /* ========== CREATURE STAGE ========== */
+  #creature-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    min-height: 240px;
+    padding: 20px 0;
+  }
+
+  #creature-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  #creature-name-tag {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 13px;
+    color: #fff;
+    background: rgba(0,0,0,0.35);
+    border-radius: 99px;
+    padding: 3px 14px;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  }
+
+  #creature-svg-wrap {
+    filter: drop-shadow(0 10px 28px rgba(0,0,0,0.35));
+    animation: idle-bob 2.8s ease-in-out infinite;
+  }
+
+  @keyframes idle-bob {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    50%       { transform: translateY(-12px) rotate(1deg); }
+  }
+
+  /* ========== EGG ========== */
+  .egg-svg {
+    animation: egg-idle 1.8s ease-in-out infinite;
+  }
+  @keyframes egg-idle {
+    0%, 100% { transform: rotate(-4deg) scale(1); }
+    50%       { transform: rotate(4deg) scale(1.04); }
+  }
+
+  /* ========== FLOATING TEXTS ========== */
+  .float-text {
+    position: absolute;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 18px;
+    color: #FFC93C;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.3), 0 0 12px rgba(255,200,60,0.6);
+    pointer-events: none;
+    animation: float-up 1.4s var(--ease-smooth) forwards;
+    z-index: 100;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 30%;
+    white-space: nowrap;
+  }
+  .float-text.stat-gain { color: #22D3EE; text-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+
+  @keyframes float-up {
+    0%   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+    60%  { opacity: 1; transform: translateX(-50%) translateY(-60px) scale(1.1); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-100px) scale(0.8); }
+  }
+
+  /* ========== MOOD EMOJI ========== */
+  #mood-emoji {
+    font-size: 28px;
+    margin-top: 6px;
+    transition: transform 0.3s var(--ease-bounce);
+  }
+
+  /* ========== EVOLUTION FLASH ========== */
+  #evo-overlay {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 999;
+    pointer-events: none;
+    opacity: 0;
+    display: none;
+  }
+  #evo-overlay.flash {
+    display: block;
+    animation: evo-flash 1.8s var(--ease-smooth) forwards;
+  }
+  @keyframes evo-flash {
+    0%   { opacity: 0; }
+    10%  { opacity: 1; }
+    40%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* Confetti container */
+  #confetti-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 200;
+    overflow: hidden;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    animation: confetti-fall 2s var(--ease-smooth) forwards;
+  }
+  @keyframes confetti-fall {
+    0%   { opacity: 1; transform: translateY(-20px) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+  }
+
+  /* ========== ACTION BUTTONS ========== */
+  #actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .action-btn {
+    background: #fff;
+    border: 2.5px solid #111;
+    border-radius: 18px;
+    box-shadow: 0 4px 0 #111, 0 4px 14px var(--shadow);
+    padding: 14px 10px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.1s var(--ease-bounce), box-shadow 0.1s;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+    min-height: 80px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .action-btn:active:not(:disabled) {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #111, 0 2px 8px var(--shadow);
+  }
+
+  .action-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .action-btn .btn-icon { font-size: 28px; line-height: 1; }
+  .action-btn .btn-label {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+
+  .action-btn .btn-cd {
+    font-size: 10px;
+    font-weight: 700;
+    color: #999;
+    position: absolute;
+    bottom: 6px;
+    right: 10px;
+  }
+
+  /* Tap ring pulse */
+  .tap-ring {
+    position: absolute;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    pointer-events: none;
+    animation: ring-pulse 0.5s var(--ease-smooth) forwards;
+  }
+  @keyframes ring-pulse {
+    0%   { transform: translate(-50%,-50%) scale(0); opacity: 1; }
+    100% { transform: translate(-50%,-50%) scale(2.2); opacity: 0; }
+  }
+
+  /* Btn colors */
+  #btn-feed   { --btn-accent: #FF8C00; }
+  #btn-play   { --btn-accent: #22D3EE; }
+  #btn-stake  { --btn-accent: #10B981; }
+  #btn-clean  { --btn-accent: #818CF8; }
+
+  .action-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--btn-accent, #FFC93C);
+    opacity: 0;
+    transition: opacity 0.15s;
+    border-radius: inherit;
+  }
+  .action-btn:active:not(:disabled)::before { opacity: 0.08; }
+
+  /* Stake active glow */
+  #btn-stake.staking {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    border-color: #10B981;
+    box-shadow: 0 4px 0 #059669, 0 4px 18px rgba(16,185,129,0.3);
+  }
+
+  /* ========== BOTTOM INFO ========== */
+  #bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  #age-badge {
+    background: rgba(255,255,255,0.2);
+    border-radius: 99px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  }
+
+  #corner-btns { display: flex; gap: 8px; }
+
+  .corner-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: background 0.15s, transform 0.15s var(--ease-bounce);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  .corner-btn:active { transform: scale(0.88); background: rgba(255,255,255,0.3); }
+
+  /* ========== FOOTER ========== */
+  #footer {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.08em;
+    font-weight: 700;
+  }
+
+  /* ========== MODALS ========== */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 500;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 14px 14px;
+    animation: backdrop-in 0.25s var(--ease-smooth);
+    backdrop-filter: blur(4px);
+  }
+  @keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal-sheet {
+    background: #fff;
+    border: 2.5px solid #111;
+    border-radius: 28px 28px 20px 20px;
+    width: 100%;
+    max-width: 460px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 24px 20px 28px;
+    animation: sheet-up 0.35s var(--ease-bounce);
+    position: relative;
+  }
+  @keyframes sheet-up {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    background: #f5f5f5;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    color: #555;
+    transition: background 0.15s, transform 0.15s var(--ease-bounce);
+  }
+  .modal-close:active { transform: scale(0.85); background: #e5e5e5; }
+
+  .modal-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 22px;
+    margin-bottom: 16px;
+    color: #111;
+  }
+
+  .modal-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .modal-step-icon {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #FFC93C, #FF8C00);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .modal-step-text strong { display: block; font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+  .modal-step-text span { font-size: 13px; color: #555; }
+
+  /* ========== ONBOARDING ========== */
+  #onboarding {
+    position: fixed;
+    inset: 0;
+    z-index: 600;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 14px 100px;
+    pointer-events: none;
+  }
+
+  .ob-bubble {
+    background: #fff;
+    border: 2.5px solid #111;
+    border-radius: 20px;
+    padding: 16px 20px;
+    max-width: 340px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    pointer-events: all;
+    animation: ob-pop 0.4s var(--ease-bounce);
+  }
+  @keyframes ob-pop {
+    from { transform: scale(0.8) translateY(40px); opacity: 0; }
+    to   { transform: scale(1) translateY(0);       opacity: 1; }
+  }
+
+  .ob-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  .ob-desc { font-size: 13px; color: #555; margin-bottom: 14px; line-height: 1.5; }
+  .ob-footer { display: flex; justify-content: space-between; align-items: center; }
+  .ob-dots { display: flex; gap: 5px; }
+  .ob-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #ddd;
+    transition: background 0.2s;
+  }
+  .ob-dot.active { background: #FF8C00; }
+  .ob-btns { display: flex; gap: 8px; }
+  .ob-btn {
+    padding: 7px 16px;
+    border-radius: 99px;
+    border: 2px solid #111;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 13px;
+    cursor: pointer;
+    transition: transform 0.15s var(--ease-bounce);
+  }
+  .ob-btn:active { transform: scale(0.9); }
+  .ob-btn.primary { background: #FF8C00; color: #fff; border-color: #111; }
+  .ob-btn.skip    { background: #f5f5f5; color: #555; }
+
+  /* ========== HIGHLIGHT PULSE for onboarding ========== */
+  .ob-highlight {
+    animation: ob-highlight-pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes ob-highlight-pulse {
+    0%, 100% { box-shadow: 0 4px 0 #111, 0 4px 14px rgba(255,140,0,0); }
+    50%       { box-shadow: 0 4px 0 #111, 0 0 0 6px rgba(255,140,0,0.45), 0 4px 20px rgba(255,140,0,0.3); }
+  }
+
+  /* ========== STAKE INFO BAR ========== */
+  #stake-info {
+    display: none;
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    border: 2px solid #10B981;
+    border-radius: 14px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #065f46;
+    margin-top: 8px;
+    text-align: center;
+    animation: fade-in 0.3s;
+  }
+  #stake-info.visible { display: block; }
+  @keyframes fade-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ========== PARTICLES ========== */
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: particle-burst 0.8s var(--ease-smooth) forwards;
+  }
+  @keyframes particle-burst {
+    0%   { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0) translate(var(--tx), var(--ty)); }
+  }
+
+  /* ========== DEATH STATE ========== */
+  #death-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 700;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+  }
+  #death-screen.visible { display: flex; }
+  .death-card {
+    background: #fff;
+    border: 2.5px solid #111;
+    border-radius: 28px;
+    padding: 36px 28px;
+    text-align: center;
+    max-width: 320px;
+    animation: sheet-up 0.4s var(--ease-bounce);
+  }
+  .death-emoji { font-size: 56px; margin-bottom: 12px; }
+  .death-title { font-family: 'Nunito', sans-serif; font-weight: 900; font-size: 26px; margin-bottom: 8px; }
+  .death-desc  { font-size: 14px; color: #555; margin-bottom: 24px; line-height: 1.5; }
+  .death-btn {
+    background: linear-gradient(135deg, #FF8C00, #FF4D6D);
+    color: #fff;
+    border: 2.5px solid #111;
+    border-radius: 14px;
+    padding: 14px 32px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #111;
+    transition: transform 0.1s var(--ease-bounce), box-shadow 0.1s;
+  }
+  .death-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #111; }
+</style>
+</head>
+<body>
+
+<div id="evo-overlay"></div>
+<div id="confetti-container"></div>
+<div id="death-screen">
+  <div class="death-card">
+    <div class="death-emoji">💀</div>
+    <div class="death-title">Uh oh...</div>
+    <div class="death-desc" id="death-msg">Your pet was neglected and passed away. Give it another shot!</div>
+    <button class="death-btn" onclick="resetGame()">🥚 Start Over</button>
+  </div>
+</div>
+
+<div id="app">
+  <!-- TOP BAR -->
+  <div id="topbar">
+    <button id="sound-btn" onclick="toggleSound()" title="Toggle Sound">🔊</button>
+    <div class="card" id="stats-card">
+      <div class="stats-grid">
+        <div class="stat-row">
+          <div class="stat-label"><span>🍖 Hunger</span><span id="hunger-val">100</span></div>
+          <div class="stat-bar-bg"><div class="stat-bar-fill hunger" id="hunger-bar" style="width:100%"></div></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label"><span>⚡ Energy</span><span id="energy-val">100</span></div>
+          <div class="stat-bar-bg"><div class="stat-bar-fill energy" id="energy-bar" style="width:100%"></div></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label"><span>😊 Mood</span><span id="mood-val">100</span></div>
+          <div class="stat-bar-bg"><div class="stat-bar-fill mood" id="mood-bar" style="width:100%"></div></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat-label"><span>⛏ Hash</span><span id="hash-val">100</span></div>
+          <div class="stat-bar-bg"><div class="stat-bar-fill hashpow" id="hash-bar" style="width:100%"></div></div>
+        </div>
+      </div>
+    </div>
+    <div id="sogo-pill">
+      <span id="sogo-icon">🪙</span>
+      <div>
+        <div id="sogo-amount">0</div>
+        <div id="sogo-label">$SOGO</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATURE STAGE -->
+  <div id="creature-stage">
+    <div id="creature-wrap" onclick="tapCreature()">
+      <div id="creature-name-tag">...</div>
+      <div id="creature-svg-wrap"></div>
+      <div id="mood-emoji">😊</div>
+    </div>
+  </div>
+
+  <!-- STAKE INFO -->
+  <div id="stake-info">⛏ Staking active — earning $SOGO passively...</div>
+
+  <!-- ACTIONS -->
+  <div id="actions">
+    <button class="action-btn" id="btn-feed"  onclick="doAction('feed')">
+      <span class="btn-icon">🍖</span>
+      <span class="btn-label">Feed</span>
+      <span class="btn-cd" id="cd-feed"></span>
+    </button>
+    <button class="action-btn" id="btn-play"  onclick="doAction('play')">
+      <span class="btn-icon">🎮</span>
+      <span class="btn-label">Play</span>
+      <span class="btn-cd" id="cd-play"></span>
+    </button>
+    <button class="action-btn" id="btn-stake" onclick="doAction('stake')">
+      <span class="btn-icon">💎</span>
+      <span class="btn-label">Stake</span>
+      <span class="btn-cd" id="cd-stake"></span>
+    </button>
+    <button class="action-btn" id="btn-clean" onclick="doAction('clean')">
+      <span class="btn-icon">🧼</span>
+      <span class="btn-label">Clean</span>
+      <span class="btn-cd" id="cd-clean"></span>
+    </button>
+  </div>
+
+  <!-- BOTTOM ROW -->
+  <div id="bottom-row">
+    <div id="age-badge">🥚 Age: 0d</div>
+    <div id="corner-btns">
+      <button class="corner-btn" onclick="openModal('howto')" title="How to Play">?</button>
+      <button class="corner-btn" onclick="openModal('about')" title="About">ℹ</button>
+    </div>
+  </div>
+
+  <div id="footer">tamagosol.fun</div>
+</div>
+
+<!-- MODALS -->
+<div id="modal-howto" class="modal-backdrop" style="display:none" onclick="closeModalIfBackdrop(event,'modal-howto')">
+  <div class="modal-sheet">
+    <button class="modal-close" onclick="closeModal('modal-howto')">×</button>
+    <div class="modal-title">🎮 How to Play</div>
+    <div class="modal-step">
+      <div class="modal-step-icon">🥚</div>
+      <div class="modal-step-text">
+        <strong>Hatch Your Pet</strong>
+        <span>Tap the egg to hatch a random Tamagosol creature!</span>
+      </div>
+    </div>
+    <div class="modal-step">
+      <div class="modal-step-icon">🍖</div>
+      <div class="modal-step-text">
+        <strong>Keep Stats Up</strong>
+        <span>Hunger, Energy, Mood & Hash Power decay over time. Use Feed, Play, Stake & Clean to keep them high.</span>
+      </div>
+    </div>
+    <div class="modal-step">
+      <div class="modal-step-icon">💎</div>
+      <div class="modal-step-text">
+        <strong>Stake to Earn</strong>
+        <span>Tap Stake to put your pet to work mining $SOGO. Unstake anytime to collect earnings.</span>
+      </div>
+    </div>
+    <div class="modal-step">
+      <div class="modal-step-icon">✨</div>
+      <div class="modal-step-text">
+        <strong>Evolve!</strong>
+        <span>Keep stats high and your pet evolves into powerful Diamond & Whale forms. Neglect it and... 💀</span>
+      </div>
+    </div>
+    <div class="modal-step">
+      <div class="modal-step-icon">🪙</div>
+      <div class="modal-step-text">
+        <strong>$SOGO Token</strong>
+        <span>Every action earns $SOGO. Staking earns the most over time. Watch your balance grow!</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-about" class="modal-backdrop" style="display:none" onclick="closeModalIfBackdrop(event,'modal-about')">
+  <div class="modal-sheet">
+    <button class="modal-close" onclick="closeModal('modal-about')">×</button>
+    <div class="modal-title">🌐 About Tamagosol</div>
+    <div class="modal-step">
+      <div class="modal-step-icon">🦎</div>
+      <div class="modal-step-text">
+        <strong>What is Tamagosol?</strong>
+        <span>A crypto-themed virtual pet game. Hatch a creature, raise it with care, and evolve it into legendary forms!</span>
+      </div>
+    </div>
+    <div class="modal-step">
+      <div class="modal-step-icon">🪙</div>
+      <div class="modal-step-text">
+        <strong>What is $SOGO?</strong>
+        <span>$SOGO is a fun, fictional in-game currency. It has zero real-world value and is not a financial product.</span>
+      </div>
+    </div>
+    <div class="modal-step">
+      <div class="modal-step-icon">⛏</div>
+      <div class="modal-step-text">
+        <strong>What is Hash Power?</strong>
+        <span>Hash Power represents your pet's mining ability. Higher Hash = more $SOGO earned when staking!</span>
+      </div>
+    </div>
+    <div class="modal-step">
+      <div class="modal-step-icon">🌍</div>
+      <div class="modal-step-text">
+        <strong>tamagosol.fun</strong>
+        <span>Pure browser game — no wallet, no real crypto, no sign-up required. Just tap and have fun!</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboarding" style="display:none">
+  <div class="ob-bubble" id="ob-bubble">
+    <div class="ob-title" id="ob-title">👋 Welcome to Tamagosol!</div>
+    <div class="ob-desc" id="ob-desc">You're about to hatch your very own crypto pet. Tap the egg to begin!</div>
+    <div class="ob-footer">
+      <div class="ob-dots">
+        <div class="ob-dot active" id="ob-dot-0"></div>
+        <div class="ob-dot" id="ob-dot-1"></div>
+        <div class="ob-dot" id="ob-dot-2"></div>
+      </div>
+      <div class="ob-btns">
+        <button class="ob-btn skip" onclick="skipOnboarding()">Skip</button>
+        <button class="ob-btn primary" id="ob-next-btn" onclick="nextOnboarding()">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// STATE MANAGEMENT
+// ============================================================
+const SAVE_KEY = 'tamagosol_v3';
+
+const SPECIES = [
+  { id: 'golden', name: 'Solbit',   color: '#FFC93C', color2: '#FFD23F', accent: '#FF8C00' },
+  { id: 'cyan',   name: 'Aquabit',  color: '#22D3EE', color2: '#67E8F9', accent: '#0EA5E9' },
+  { id: 'coral',  name: 'Blazebit', color: '#FF4D6D', color2: '#FF6B6B', accent: '#DC2626' },
+];
+
+const STAGES = ['egg', 'baby', 'teen', 'adult', 'diamond', 'whale', 'neglected'];
+const STAGE_NAMES = { egg:'Egg', baby:'Baby', teen:'Teen', adult:'Adult', diamond:'💎 Diamond', whale:'🐋 Whale', neglected:'😵 Neglected' };
+
+const STAT_DECAY_PER_SEC = { hunger: 0.6, energy: 0.5, mood: 0.55, hashpow: 0.3 };
+const STAKE_EARN_PER_SEC = 0.08; // base $SOGO per sec while staking
+const HATCH_DELAY = 800;
+
+let state = {
+  hatched: false,
+  species: null,     // index 0-2
+  stage: 'egg',
+  stats: { hunger: 100, energy: 100, mood: 100, hashpow: 100 },
+  sogo: 0,
+  ageSeconds: 0,
+  staking: false,
+  stakeStartTime: null,
+  lastTick: Date.now(),
+  cooldowns: { feed: 0, play: 0, stake: 0, clean: 0 },
+  evolutionCount: 0,
+  dead: false,
+};
+
+let soundEnabled = true;
+let animFrame = null;
+let onboardingStep = 0;
+const ONBOARDING_STEPS = [
+  { title: '👋 Welcome to Tamagosol!', desc: 'You\'re about to hatch your very own crypto pet. Tap the egg to begin!' },
+  { title: '📊 Watch Your Stats', desc: 'Keep Hunger, Energy, Mood & Hash Power above 0 using the action buttons!' },
+  { title: '💎 Earn & Evolve', desc: 'Stake your pet to earn $SOGO over time. Keep stats high to unlock powerful evolutions!' },
+];
+
+// ============================================================
+// SAVE / LOAD
+// ============================================================
+function saveState() {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    state = { ...state, ...saved };
+    // Apply time decay since last save
+    if (state.lastTick && state.hatched && !state.dead) {
+      const elapsed = (Date.now() - state.lastTick) / 1000;
+      applyDecay(Math.min(elapsed, 3600)); // cap at 1 hr
+    }
+    state.lastTick = Date.now();
+  } catch(e) { resetGame(true); }
+}
+
+// ============================================================
+// DECAY & TICK
+// ============================================================
+function applyDecay(seconds) {
+  if (!state.hatched || state.stage === 'egg' || state.dead) return;
+  const mult = state.staking ? 1.3 : 1.0; // staking drains more
+  for (const s of ['hunger','energy','mood','hashpow']) {
+    state.stats[s] = Math.max(0, state.stats[s] - STAT_DECAY_PER_SEC[s] * seconds * mult);
+  }
+  state.ageSeconds += seconds;
+  if (state.staking && state.stakeStartTime) {
+    const sogoEarned = STAKE_EARN_PER_SEC * (state.stats.hashpow / 100) * seconds;
+    state.sogo += sogoEarned;
+  }
+}
+
+function checkDeath() {
+  if (state.dead || !state.hatched || state.stage === 'egg') return;
+  const allZero = ['hunger','energy','mood'].every(s => state.stats[s] <= 0);
+  if (allZero) {
+    state.dead = true;
+    state.staking = false;
+    saveState();
+    document.getElementById('death-screen').classList.add('visible');
+  }
+}
+
+function checkEvolution() {
+  if (!state.hatched || state.dead) return;
+  const avg = (state.stats.hunger + state.stats.energy + state.stats.mood + state.stats.hashpow) / 4;
+  const age = state.ageSeconds;
+
+  let newStage = state.stage;
+
+  if (state.stage === 'baby' && age > 60) {
+    newStage = 'teen';
+  } else if (state.stage === 'teen' && age > 180) {
+    newStage = avg > 65 ? 'adult' : 'neglected';
+  } else if (state.stage === 'adult' && age > 400) {
+    if (avg > 80) newStage = 'whale';
+    else if (avg > 60) newStage = 'diamond';
+    else newStage = 'neglected';
+  }
+
+  if (newStage !== state.stage) {
+    triggerEvolution(newStage);
+  }
+}
+
+// ============================================================
+// MAIN GAME LOOP
+// ============================================================
+let lastFrame = 0;
+function gameLoop(timestamp) {
+  if (!lastFrame) lastFrame = timestamp;
+  const dt = (timestamp - lastFrame) / 1000;
+  lastFrame = timestamp;
+
+  if (state.hatched && !state.dead) {
+    applyDecay(dt);
+    checkDeath();
+    checkEvolution();
+  }
+
+  // Cooldown timers
+  const now = Date.now();
+  for (const a of ['feed','play','stake','clean']) {
+    const remaining = Math.max(0, state.cooldowns[a] - now);
+    const cd = document.getElementById('cd-' + a);
+    const btn = document.getElementById('btn-' + a);
+    if (remaining > 0) {
+      if (cd) cd.textContent = (remaining/1000).toFixed(1) + 's';
+      if (btn) btn.disabled = true;
+    } else {
+      if (cd) cd.textContent = '';
+      if (btn && !state.dead) btn.disabled = false;
+    }
+  }
+
+  updateUI();
+  animFrame = requestAnimationFrame(gameLoop);
+}
+
+// ============================================================
+// UI UPDATE
+// ============================================================
+function updateUI() {
+  if (!state.hatched) return;
+
+  // Stats
+  for (const s of ['hunger','energy','mood','hashpow']) {
+    const v = Math.round(state.stats[s]);
+    const mapId = { hunger:'hunger', energy:'energy', mood:'mood', hashpow:'hash' };
+    const barEl  = document.getElementById(mapId[s] + '-bar');
+    const valEl  = document.getElementById(mapId[s] + '-val');
+    if (barEl) barEl.style.width = v + '%';
+    if (valEl) valEl.textContent = v;
+    // Color warning
+    if (barEl) {
+      if (v < 25) barEl.style.filter = 'saturate(1.5) brightness(0.9)';
+      else barEl.style.filter = '';
+    }
+  }
+
+  // Sogo
+  document.getElementById('sogo-amount').textContent = Math.floor(state.sogo).toLocaleString();
+
+  // Age badge
+  const age = state.ageSeconds;
+  let ageStr;
+  if (age < 60) ageStr = Math.floor(age) + 's';
+  else if (age < 3600) ageStr = Math.floor(age/60) + 'm';
+  else ageStr = (age/3600).toFixed(1) + 'h';
+  document.getElementById('age-badge').textContent = `${stageEmoji(state.stage)} Age: ${ageStr}`;
+
+  // Mood emoji
+  const avg = (state.stats.hunger + state.stats.energy + state.stats.mood) / 3;
+  let emoji = avg > 80 ? '😄' : avg > 60 ? '😊' : avg > 40 ? '😐' : avg > 20 ? '😟' : '😰';
+  document.getElementById('mood-emoji').textContent = emoji;
+
+  // Stake info
+  const si = document.getElementById('stake-info');
+  const stakeBtn = document.getElementById('btn-stake');
+  if (state.staking) {
+    si.classList.add('visible');
+    stakeBtn.classList.add('staking');
+    stakeBtn.querySelector('.btn-label').textContent = 'Unstake';
+    stakeBtn.querySelector('.btn-icon').textContent = '⛏';
+  } else {
+    si.classList.remove('visible');
+    stakeBtn.classList.remove('staking');
+    stakeBtn.querySelector('.btn-label').textContent = 'Stake';
+    stakeBtn.querySelector('.btn-icon').textContent = '💎';
+  }
+
+  // Creature name
+  const sp = SPECIES[state.species];
+  if (sp) {
+    const stageName = STAGE_NAMES[state.stage] || state.stage;
+    document.getElementById('creature-name-tag').textContent = `${sp.name} · ${stageName}`;
+  }
+}
+
+function stageEmoji(stage) {
+  return { egg:'🥚', baby:'🐣', teen:'🦎', adult:'🦕', diamond:'💎', whale:'🐋', neglected:'💀' }[stage] || '✨';
+}
+
+// ============================================================
+// CREATURE RENDERING
+// ============================================================
+function renderCreature() {
+  const wrap = document.getElementById('creature-svg-wrap');
+  const sp = state.species !== null ? SPECIES[state.species] : SPECIES[0];
+
+  if (state.stage === 'egg') {
+    wrap.innerHTML = buildEggSVG(sp);
+    wrap.querySelector('svg').classList.add('egg-svg');
+    return;
+  }
+
+  wrap.innerHTML = buildCreatureSVG(sp, state.stage);
+}
+
+function buildEggSVG(sp) {
+  const c = sp ? sp.color : '#FFC93C';
+  const c2 = sp ? sp.color2 : '#FFD23F';
+  return `<svg width="120" height="140" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="egg-grad" cx="35%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="${c2}"/>
+        <stop offset="100%" stop-color="${c}"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="60" cy="76" rx="46" ry="56" fill="url(#egg-grad)" stroke="#222" stroke-width="2.5"/>
+    <!-- crack lines -->
+    <path d="M55 42 L58 52 L52 58 L57 66" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+    <path d="M65 40 L68 50 L63 55" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
+    <!-- highlight -->
+    <ellipse cx="42" cy="52" rx="12" ry="8" fill="#fff" opacity="0.35" transform="rotate(-20,42,52)"/>
+    <!-- dots -->
+    <circle cx="72" cy="90" r="5" fill="${c2}" opacity="0.5"/>
+    <circle cx="48" cy="98" r="3.5" fill="${c2}" opacity="0.4"/>
+  </svg>`;
+}
+
+function buildCreatureSVG(sp, stage) {
+  const c  = sp.color;
+  const c2 = sp.color2;
+  const ac = sp.accent;
+
+  const sizes = {
+    baby:      { w:110, h:120, bodyRx:30, bodyRy:30, ey:52, eyeSize:8, legH:18 },
+    teen:      { w:130, h:140, bodyRx:35, bodyRy:33, ey:55, eyeSize:9, legH:22 },
+    adult:     { w:150, h:160, bodyRx:42, bodyRy:40, ey:60, eyeSize:10, legH:26 },
+    diamond:   { w:160, h:170, bodyRx:44, bodyRy:42, ey:62, eyeSize:11, legH:28 },
+    whale:     { w:180, h:180, bodyRx:52, bodyRy:50, ey:65, eyeSize:12, legH:30 },
+    neglected: { w:110, h:120, bodyRx:28, bodyRy:28, ey:50, eyeSize:7,  legH:16 },
+  };
+
+  const d = sizes[stage] || sizes.baby;
+  const cx = d.w / 2;
+  const bodyY = d.h - d.legH - d.bodyRy;
+
+  const bodyColor  = stage === 'neglected' ? '#9CA3AF' : `url(#body-grad-${stage})`;
+  const bodyColor2 = stage === 'neglected' ? '#D1D5DB' : c2;
+  const accColor   = stage === 'neglected' ? '#6B7280' : ac;
+
+  // Diamond/Whale extras
+  const crown = (stage === 'diamond' || stage === 'whale') ?
+    `<polygon points="${cx},${bodyY - d.bodyRy - 18} ${cx-10},${bodyY - d.bodyRy - 8} ${cx+10},${bodyY - d.bodyRy - 8}" fill="#FFC93C" stroke="#111" stroke-width="1.5"/>
+     <polygon points="${cx-10},${bodyY - d.bodyRy - 8} ${cx-18},${bodyY - d.bodyRy + 2} ${cx-2},${bodyY - d.bodyRy + 2}" fill="#FFC93C" stroke="#111" stroke-width="1.5"/>
+     <polygon points="${cx+10},${bodyY - d.bodyRy - 8} ${cx+18},${bodyY - d.bodyRy + 2} ${cx+2},${bodyY - d.bodyRy + 2}" fill="#FFC93C" stroke="#111" stroke-width="1.5"/>` : '';
+
+  const glowRing = (stage === 'diamond' || stage === 'whale') ?
+    `<ellipse cx="${cx}" cy="${bodyY}" rx="${d.bodyRx + 14}" ry="${d.bodyRy + 14}" fill="none" stroke="${c}" stroke-width="2" opacity="0.3"/>` : '';
+
+  const deadX = stage === 'neglected' ? `
+    <line x1="${cx-14}" y1="${d.ey-6}" x2="${cx-6}" y2="${d.ey+2}" stroke="#555" stroke-width="2" stroke-linecap="round"/>
+    <line x1="${cx-6}"  y1="${d.ey-6}" x2="${cx-14}" y2="${d.ey+2}" stroke="#555" stroke-width="2" stroke-linecap="round"/>
+    <line x1="${cx+6}"  y1="${d.ey-6}" x2="${cx+14}" y2="${d.ey+2}" stroke="#555" stroke-width="2" stroke-linecap="round"/>
+    <line x1="${cx+14}" y1="${d.ey-6}" x2="${cx+6}"  y2="${d.ey+2}" stroke="#555" stroke-width="2" stroke-linecap="round"/>
+  ` : `
+    <circle cx="${cx-10}" cy="${d.ey}" r="${d.eyeSize}" fill="#111"/>
+    <circle cx="${cx+10}" cy="${d.ey}" r="${d.eyeSize}" fill="#111"/>
+    <circle cx="${cx-8}"  cy="${d.ey-2}" r="${Math.max(2,d.eyeSize*0.35)}" fill="#fff"/>
+    <circle cx="${cx+12}" cy="${d.ey-2}" r="${Math.max(2,d.eyeSize*0.35)}" fill="#fff"/>
+  `;
+
+  const mouth = stage === 'neglected'
+    ? `<path d="M${cx-8} ${d.ey+16} Q${cx} ${d.ey+12} ${cx+8} ${d.ey+16}" stroke="#555" stroke-width="2" fill="none" stroke-linecap="round"/>`
+    : `<path d="M${cx-8} ${d.ey+14} Q${cx} ${d.ey+22} ${cx+8} ${d.ey+14}" stroke="#111" stroke-width="2" fill="${accColor}" stroke-linecap="round"/>`;
+
+  return `<svg width="${d.w}" height="${d.h+10}" viewBox="0 0 ${d.w} ${d.h+10}" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="body-grad-${stage}" cx="35%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="${bodyColor2}"/>
+        <stop offset="100%" stop-color="${c}"/>
+      </radialGradient>
+    </defs>
+    ${glowRing}
+    <!-- shadow -->
+    <ellipse cx="${cx}" cy="${d.h + 6}" rx="${d.bodyRx * 0.85}" ry="6" fill="rgba(0,0,0,0.18)"/>
+    <!-- legs -->
+    <rect x="${cx - d.bodyRx*0.55}" y="${bodyY + d.bodyRy*0.7}" width="${d.bodyRx*0.45}" height="${d.legH}" rx="${d.bodyRx*0.22}" fill="${bodyColor}" stroke="#111" stroke-width="1.5"/>
+    <rect x="${cx + d.bodyRx*0.1}"  y="${bodyY + d.bodyRy*0.7}" width="${d.bodyRx*0.45}" height="${d.legH}" rx="${d.bodyRx*0.22}" fill="${bodyColor}" stroke="#111" stroke-width="1.5"/>
+    <!-- body -->
+    <ellipse cx="${cx}" cy="${bodyY}" rx="${d.bodyRx}" ry="${d.bodyRy}" fill="${bodyColor}" stroke="#111" stroke-width="2.5"/>
+    <!-- highlight -->
+    <ellipse cx="${cx - d.bodyRx*0.25}" cy="${bodyY - d.bodyRy*0.28}" rx="${d.bodyRx*0.32}" ry="${d.bodyRy*0.22}" fill="#fff" opacity="0.38" transform="rotate(-15,${cx - d.bodyRx*0.25},${bodyY - d.bodyRy*0.28})"/>
+    <!-- arms -->
+    <ellipse cx="${cx - d.bodyRx - 4}" cy="${bodyY - d.bodyRy*0.1}" rx="${d.bodyRx*0.28}" ry="${d.bodyRy*0.38}" fill="${bodyColor}" stroke="#111" stroke-width="1.5" transform="rotate(-20,${cx - d.bodyRx - 4},${bodyY})"/>
+    <ellipse cx="${cx + d.bodyRx + 4}" cy="${bodyY - d.bodyRy*0.1}" rx="${d.bodyRx*0.28}" ry="${d.bodyRy*0.38}" fill="${bodyColor}" stroke="#111" stroke-width="1.5" transform="rotate(20,${cx + d.bodyRx + 4},${bodyY})"/>
+    <!-- face -->
+    ${deadX}
+    ${mouth}
+    ${crown}
+    <!-- cheeks -->
+    <circle cx="${cx-18}" cy="${d.ey+10}" r="7" fill="${ac}" opacity="0.28"/>
+    <circle cx="${cx+18}" cy="${d.ey+10}" r="7" fill="${ac}" opacity="0.28"/>
+    <!-- belly spot -->
+    <ellipse cx="${cx}" cy="${bodyY + d.bodyRy*0.25}" rx="${d.bodyRx*0.45}" ry="${d.bodyRy*0.3}" fill="#fff" opacity="0.18"/>
+  </svg>`;
+}
+
+// ============================================================
+// HATCHING
+// ============================================================
+function tapCreature() {
+  if (state.stage !== 'egg') return;
+  if (state.hatching) return;
+  state.hatching = true;
+
+  // Pick random species
+  state.species = Math.floor(Math.random() * 3);
+  const sp = SPECIES[state.species];
+
+  // Hatch animation: shake egg
+  const wrap = document.getElementById('creature-svg-wrap');
+  wrap.style.animation = 'none';
+  wrap.style.transform = 'scale(1)';
+
+  let shakes = 0;
+  const shakeInterval = setInterval(() => {
+    shakes++;
+    const angle = (Math.random() - 0.5) * 20;
+    wrap.style.transform = `rotate(${angle}deg) scale(1.05)`;
+    if (shakes > 8) {
+      clearInterval(shakeInterval);
+      doHatch(sp);
+    }
+  }, 90);
+}
+
+function doHatch(sp) {
+  const wrap = document.getElementById('creature-svg-wrap');
+  wrap.style.transform = 'scale(1.3)';
+  wrap.style.transition = 'transform 0.3s';
+
+  spawnConfetti(sp.color, 60);
+  spawnFloatText(`✨ ${sp.name} hatched!`, false);
+
+  setTimeout(() => {
+    state.hatched = true;
+    state.stage = 'baby';
+    state.lastTick = Date.now();
+    saveState();
+
+    wrap.style.transform = '';
+    wrap.style.transition = '';
+    wrap.style.animation = '';
+    renderCreature();
+
+    // Show onboarding if first visit
+    const ob = localStorage.getItem('tamagosol_ob');
+    if (!ob) showOnboarding();
+  }, HATCH_DELAY);
+}
+
+// ============================================================
+// ACTIONS
+// ============================================================
+const ACTION_CONFIG = {
+  feed:  { cd: 8000,  statGains: { hunger: 28, energy: 5 },  sogo: 3,  anim: '🍖', floats: ['+28 Hunger', '+3 $SOGO'] },
+  play:  { cd: 10000, statGains: { mood: 30, hashpow: 8 },   sogo: 5,  anim: '🎮', floats: ['+30 Mood', '+5 $SOGO'] },
+  clean: { cd: 12000, statGains: { mood: 15, hashpow: 20 },  sogo: 2,  anim: '🧼', floats: ['+20 Hash', '+2 $SOGO'] },
+};
+
+function doAction(action) {
+  if (state.dead) return;
+  if (!state.hatched) { tapCreature(); return; }
+  if (state.stage === 'egg') return;
+
+  const now = Date.now();
+  if (now < state.cooldowns[action]) return;
+
+  if (action === 'stake') {
+    toggleStake();
+    return;
+  }
+
+  const cfg = ACTION_CONFIG[action];
+  if (!cfg) return;
+
+  state.cooldowns[action] = now + cfg.cd;
+  for (const [stat, val] of Object.entries(cfg.statGains)) {
+    state.stats[stat] = Math.min(100, state.stats[stat] + val);
+  }
+  state.sogo += cfg.sogo;
+
+  // Animations
+  const btn = document.getElementById('btn-' + action);
+  addTapRing(btn);
+  cfg.floats.forEach((txt, i) => setTimeout(() => spawnFloatText(txt, i > 0), i * 180));
+  bounceCreature();
+  saveState();
+}
+
+function toggleStake() {
+  if (state.staking) {
+    // Unstake: collect
+    const earned = STAKE_EARN_PER_SEC * (state.stats.hashpow / 100) * ((Date.now() - state.stakeStartTime) / 1000);
+    state.sogo += earned;
+    state.staking = false;
+    state.stakeStartTime = null;
+    spawnFloatText(`+${Math.floor(earned)} $SOGO ⛏`, false);
+  } else {
+    state.staking = true;
+    state.stakeStartTime = Date.now();
+    spawnFloatText('⛏ Staking...', false);
+  }
+  addTapRing(document.getElementById('btn-stake'));
+  saveState();
+}
+
+// ============================================================
+// EVOLUTIONS
+// ============================================================
+function triggerEvolution(newStage) {
+  const oldStage = state.stage;
+  state.stage = newStage;
+  state.evolutionCount++;
+  saveState();
+
+  // Flash effect
+  const ov = document.getElementById('evo-overlay');
+  ov.classList.add('flash');
+  ov.addEventListener('animationend', () => { ov.classList.remove('flash'); ov.style.display = 'none'; }, { once: true });
+  ov.style.display = 'block';
+
+  spawnConfetti(SPECIES[state.species].color, 80);
+  const name = STAGE_NAMES[newStage] || newStage;
+  setTimeout(() => spawnFloatText(`✨ Evolved → ${name}!`, false), 400);
+
+  renderCreature();
+}
+
+// ============================================================
+// VISUAL HELPERS
+// ============================================================
+function bounceCreature() {
+  const wrap = document.getElementById('creature-svg-wrap');
+  wrap.style.animation = 'none';
+  wrap.style.transform = 'scale(1.18) translateY(-10px)';
+  setTimeout(() => {
+    wrap.style.transform = '';
+    wrap.style.animation = '';
+    setTimeout(() => { wrap.style.animation = 'idle-bob 2.8s ease-in-out infinite'; }, 50);
+  }, 280);
+}
+
+function addTapRing(btn) {
+  if (!btn) return;
+  const ring = document.createElement('div');
+  ring.className = 'tap-ring';
+  btn.appendChild(ring);
+  ring.addEventListener('animationend', () => ring.remove());
+}
+
+function spawnFloatText(text, isStat) {
+  const stage = document.getElementById('creature-stage');
+  const el = document.createElement('div');
+  el.className = 'float-text' + (isStat ? ' stat-gain' : '');
+  el.textContent = text;
+  el.style.top = (20 + Math.random() * 30) + '%';
+  stage.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
+}
+
+function spawnConfetti(color, count) {
+  const container = document.getElementById('confetti-container');
+  const colors = [color, '#fff', '#FFC93C', '#FF4D6D', '#22D3EE'];
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = (10 + Math.random() * 80) + '%';
+    el.style.top  = (Math.random() * 30) + '%';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.width = el.style.height = (6 + Math.random() * 8) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    el.style.animationDelay = (Math.random() * 0.5) + 's';
+    el.style.animationDuration = (1.2 + Math.random() * 1.2) + 's';
+    container.appendChild(el);
+    el.addEventListener('animationend', () => el.remove());
+  }
+}
+
+// ============================================================
+// SOUND (Web Audio API)
+// ============================================================
+let audioCtx = null;
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function playTone(freq, dur, type = 'sine', vol = 0.18) {
+  if (!soundEnabled) return;
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + dur);
+  } catch(e) {}
+}
+function playHatch() {
+  playTone(523, 0.12); setTimeout(() => playTone(659, 0.12), 130); setTimeout(() => playTone(784, 0.25), 260);
+}
+function playAction() {
+  playTone(880, 0.08, 'triangle', 0.12); setTimeout(() => playTone(1046, 0.08, 'triangle', 0.12), 90);
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(id) {
+  document.getElementById('modal-' + id).style.display = 'flex';
+}
+function closeModal(id) {
+  document.getElementById('modal-' + id).style.display = 'none';
+}
+function closeModalIfBackdrop(e, id) {
+  if (e.target === e.currentTarget) closeModal(id);
+}
+
+// ============================================================
+// ONBOARDING
+// ============================================================
+function showOnboarding() {
+  onboardingStep = 0;
+  document.getElementById('onboarding').style.display = 'flex';
+  updateOnboardingUI();
+}
+
+function updateOnboardingUI() {
+  const step = ONBOARDING_STEPS[onboardingStep];
+  document.getElementById('ob-title').textContent = step.title;
+  document.getElementById('ob-desc').textContent  = step.desc;
+  for (let i = 0; i < 3; i++) {
+    document.getElementById('ob-dot-' + i).classList.toggle('active', i === onboardingStep);
+  }
+  const nextBtn = document.getElementById('ob-next-btn');
+  nextBtn.textContent = onboardingStep === 2 ? 'Let\'s go! 🚀' : 'Next →';
+  // Highlight relevant buttons
+  const highlights = [null, 'btn-feed', 'btn-stake'];
+  for (const cls of ['btn-feed','btn-play','btn-stake','btn-clean']) {
+    document.getElementById(cls).classList.remove('ob-highlight');
+  }
+  if (highlights[onboardingStep]) {
+    document.getElementById(highlights[onboardingStep]).classList.add('ob-highlight');
+  }
+}
+
+function nextOnboarding() {
+  onboardingStep++;
+  if (onboardingStep >= ONBOARDING_STEPS.length) {
+    skipOnboarding();
+  } else {
+    updateOnboardingUI();
+  }
+}
+
+function skipOnboarding() {
+  document.getElementById('onboarding').style.display = 'none';
+  localStorage.setItem('tamagosol_ob', '1');
+  for (const cls of ['btn-feed','btn-play','btn-stake','btn-clean']) {
+    document.getElementById(cls).classList.remove('ob-highlight');
+  }
+}
+
+// ============================================================
+// SOUND TOGGLE
+// ============================================================
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  document.getElementById('sound-btn').textContent = soundEnabled ? '🔊' : '🔇';
+}
+
+// ============================================================
+// RESET
+// ============================================================
+function resetGame(silent = false) {
+  state = {
+    hatched: false, species: null, stage: 'egg',
+    stats: { hunger: 100, energy: 100, mood: 100, hashpow: 100 },
+    sogo: 0, ageSeconds: 0, staking: false, stakeStartTime: null,
+    lastTick: Date.now(), cooldowns: { feed:0, play:0, stake:0, clean:0 },
+    evolutionCount: 0, dead: false,
+  };
+  document.getElementById('death-screen').classList.remove('visible');
+  saveState();
+  renderCreature();
+  document.getElementById('creature-name-tag').textContent = 'Tap to hatch!';
+  document.getElementById('mood-emoji').textContent = '🥚';
+  for (const s of ['hunger','energy','mood','hashpow']) {
+    const mapId = { hunger:'hunger', energy:'energy', mood:'mood', hashpow:'hash' };
+    const bar = document.getElementById(mapId[s] + '-bar');
+    const val = document.getElementById(mapId[s] + '-val');
+    if (bar) bar.style.width = '100%';
+    if (val) val.textContent = '100';
+  }
+  if (!silent) spawnConfetti('#FFC93C', 40);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  loadState();
+  renderCreature();
+
+  if (!state.hatched) {
+    document.getElementById('creature-name-tag').textContent = 'Tap to hatch!';
+    document.getElementById('mood-emoji').textContent = '🥚';
+  }
+
+  if (state.dead) {
+    document.getElementById('death-screen').classList.add('visible');
+  }
+
+  lastFrame = 0;
+  animFrame = requestAnimationFrame(gameLoop);
+
+  // Auto-save every 10s
+  setInterval(saveState, 10000);
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
