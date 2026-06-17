@@ -49,8 +49,30 @@ body::before{
   background:linear-gradient(165deg,#FF7700 0%,#BB2000 52%,#3A0600 100%);
   z-index:100;align-items:center;justify-content:center;
 }
-.intro-body{display:flex;flex-direction:column;align-items:center;padding:32px 24px}
+.intro-body{display:flex;flex-direction:column;align-items:center;padding:32px 24px 28px;min-height:100dvh;justify-content:space-between}
+.intro-main{display:flex;flex-direction:column;align-items:center}
 .logo-wrap{position:relative;display:flex;flex-direction:column;align-items:center;margin-bottom:28px}
+.intro-bottom{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:320px}
+.intro-links{display:flex;align-items:center;gap:6px}
+.intro-link{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.22);
+  border-radius:99px;padding:8px 16px;color:#fff;
+  font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;
+  cursor:pointer;backdrop-filter:blur(8px);
+  transition:background .18s,transform .18s var(--ease-b);
+  text-decoration:none;letter-spacing:.02em;
+}
+.intro-link:active{transform:scale(.93);background:rgba(255,255,255,.24)}
+.intro-link-sep{color:rgba(255,255,255,.22);font-size:18px;font-weight:300}
+.intro-orynth{
+  display:block;border-radius:13px;overflow:hidden;
+  border:2px solid rgba(255,255,255,.18);
+  box-shadow:0 4px 20px rgba(0,0,0,.28);
+  transition:transform .22s var(--ease-b),box-shadow .22s;
+}
+.intro-orynth:active{transform:scale(.96);box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.intro-orynth img{display:block;width:220px;height:auto}
 .logo-emblem{width:136px;height:136px;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 16px 40px rgba(0,0,0,.5))}
 @keyframes float{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-13px) rotate(1.2deg)}}
 .glow-ring{position:absolute;border-radius:50%;border:1.5px solid rgba(255,200,60,.22);animation:ring-pulse 3s ease-in-out infinite;pointer-events:none}
@@ -476,6 +498,7 @@ body::before{
   <!-- ═══════════════════════════ INTRO ═══════════════════════════ -->
   <div class="screen" id="screen-intro">
     <div class="intro-body">
+      <div class="intro-main">
       <div class="logo-wrap">
         <div class="glow-ring"></div><div class="glow-ring"></div><div class="glow-ring"></div>
         <div class="logo-emblem">
@@ -523,6 +546,22 @@ body::before{
       </div>
       <div class="intro-bar-wrap"><div class="intro-bar" id="intro-bar"></div></div>
       <div class="intro-skip" onclick="skipIntro()">TAP TO SKIP</div>
+      </div><!-- /intro-main -->
+
+      <div class="intro-bottom">
+        <div class="intro-links">
+          <button class="intro-link" onclick="openModal('howto')">
+            <span>🎮</span> How to Play
+          </button>
+          <span class="intro-link-sep">|</span>
+          <button class="intro-link" onclick="openModal('about')">
+            <span>🌐</span> About
+          </button>
+        </div>
+        <a class="intro-orynth" href="https://orynth.dev/projects/tamagosol" target="_blank" rel="noopener">
+          <img src="https://orynth.dev/api/badge/tamagosol?theme=light&style=default" alt="Featured on Orynth" width="220" height="68">
+        </a>
+      </div>
     </div>
   </div>
 
