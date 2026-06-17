@@ -47,14 +47,14 @@ body::before{
 
 /* ================================================================ INTRO */
 #screen-intro{
-  background:linear-gradient(165deg,#FF7700 0%,#BB2000 52%,#3A0600 100%);
+  background:radial-gradient(ellipse at 50% 38%,#1A0C05 0%,#0D0804 55%,#080503 100%);
   z-index:100;align-items:center;justify-content:center;
 }
-.intro-body{display:flex;flex-direction:column;align-items:center;padding:16px 24px 20px;min-height:100dvh;justify-content:space-between}
-.intro-main{display:flex;flex-direction:column;align-items:center}
+.intro-body{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px;min-height:100dvh;gap:0}
+.intro-main{display:flex;flex-direction:column;align-items:center;margin-top:-24px}
 .logo-wrap{position:relative;display:flex;flex-direction:column;align-items:center;margin-bottom:0px}
-.logo-wrap::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);width:280px;height:280px;border-radius:50%;background:radial-gradient(ellipse,rgba(255,180,0,.22) 0%,rgba(255,100,0,.08) 55%,transparent 75%);pointer-events:none;z-index:-1}
-.intro-bottom{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:320px}
+.logo-wrap::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);width:320px;height:320px;border-radius:50%;background:radial-gradient(ellipse,rgba(255,140,0,.18) 0%,rgba(200,60,0,.06) 60%,transparent 80%);pointer-events:none;z-index:-1}
+
 .intro-links{display:flex;align-items:center;gap:6px}
 .intro-link{
   display:flex;align-items:center;gap:5px;
@@ -87,9 +87,9 @@ body::before{
 .t-white{color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.3)}
 .t-gold{background:linear-gradient(135deg,#FFE580 0%,#FF9500 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:900;}
 .logo-tag{margin-top:7px;color:rgba(255,255,255,.7);font-size:12px;font-weight:700;letter-spacing:.25em;text-transform:uppercase}
-.intro-bar-wrap{width:160px;height:3px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-top:20px}
-.intro-bar{height:100%;background:linear-gradient(90deg,#FFD23F,#FF8C00);border-radius:99px;width:0%;transition:width .08s linear}
-.intro-skip{margin-top:14px;color:rgba(255,255,255,.28);font-size:11px;font-weight:500;letter-spacing:.2em;cursor:pointer;text-transform:lowercase;font-family:'Outfit',sans-serif}
+.intro-bar-wrap{width:140px;height:2px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;margin-top:24px}
+.intro-bar{height:100%;background:linear-gradient(90deg,#FF8C00,#FFD23F);border-radius:99px;width:0%;transition:width .08s linear}
+.intro-skip{margin-top:12px;color:rgba(255,255,255,.2);font-size:10px;font-weight:400;letter-spacing:.22em;cursor:pointer;text-transform:lowercase;font-family:'Outfit',sans-serif}
 .intro-skip:active{color:rgba(255,255,255,.7)}
 
 /* ================================================================ AUTH */
@@ -324,6 +324,9 @@ body::before{
 
 /* ── PROFILE TAB ── */
 #tab-profile{padding:12px 12px 24px}
+.prof-quick-links{display:flex;gap:8px;margin-bottom:12px}
+.prof-qlink{flex:1;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:14px;padding:12px 8px;color:#fff;font-family:'Fredoka',sans-serif;font-weight:600;font-size:14px;cursor:pointer;backdrop-filter:blur(8px);transition:background .15s,transform .15s var(--ease-b);letter-spacing:.03em;text-align:center}
+.prof-qlink:active{background:rgba(255,255,255,.18);transform:scale(.96)}
 .prof-card{background:rgba(255,255,255,.97);border:2.5px solid #111;border-radius:22px;padding:20px;margin-bottom:12px;box-shadow:var(--sh)}
 .prof-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
 .prof-avatar{width:58px;height:58px;border-radius:50%;border:3px solid #111;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
@@ -506,7 +509,7 @@ body::before{
 
         <div class="logo-emblem">
           <!-- COIN EMBLEM SVG -->
-<img src="logo_nobg.png" alt="TamagoSOL" style="width:240px;height:240px;object-fit:contain;mix-blend-mode:screen;filter:brightness(1.1) contrast(1.05)">
+<img src="logo_nobg.png" alt="TamagoSOL" style="width:260px;height:260px;object-fit:contain;filter:brightness(1.05)">
         </div>
 
       </div>
@@ -514,20 +517,7 @@ body::before{
       <div class="intro-skip" onclick="skipIntro()">— tap to skip —</div>
       </div><!-- /intro-main -->
 
-      <div class="intro-bottom">
-        <div class="intro-links">
-          <button class="intro-link" onclick="openModal('howto')">
-            <span>🎮</span> How to Play
-          </button>
-          <span class="intro-link-sep">|</span>
-          <button class="intro-link" onclick="openModal('about')">
-            <span>🌐</span> About
-          </button>
-        </div>
-        <a class="intro-orynth" href="https://orynth.dev/projects/tamagosol" target="_blank" rel="noopener">
-          <img src="https://orynth.dev/api/badge/tamagosol?theme=light&style=default" alt="Featured on Orynth" width="220" height="68">
-        </a>
-      </div>
+
     </div>
   </div>
 
@@ -636,8 +626,7 @@ body::before{
         <div id="play-footer">
           <div id="age-badge">🥚 Age: 0s</div>
           <div class="play-corner-btns">
-            <button class="pcbtn" onclick="openModal('howto')">?</button>
-            <button class="pcbtn" onclick="openModal('about')">ℹ</button>
+
           </div>
         </div>
         <div style="display:flex;align-items:center;justify-content:center;gap:10px;padding:2px 12px 8px">
@@ -680,6 +669,10 @@ body::before{
             <div class="prof-stat"><div class="prof-stat-val" id="ps-evos">0</div><div class="prof-stat-lbl">Evolutions</div></div>
             <div class="prof-stat"><div class="prof-stat-val" id="ps-plays">0</div><div class="prof-stat-lbl">Actions</div></div>
           </div>
+        </div>
+        <div class="prof-quick-links">
+          <button class="prof-qlink" onclick="openModal('howto')">🎮 How to Play</button>
+          <button class="prof-qlink" onclick="openModal('about')">🌐 About</button>
         </div>
         <div class="ach-title">🏅 Achievements</div>
         <div class="ach-grid" id="ach-grid"></div>
