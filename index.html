@@ -49,9 +49,10 @@ body::before{
   background:linear-gradient(165deg,#FF7700 0%,#BB2000 52%,#3A0600 100%);
   z-index:100;align-items:center;justify-content:center;
 }
-.intro-body{display:flex;flex-direction:column;align-items:center;padding:20px 24px 24px;min-height:100dvh;justify-content:space-between}
+.intro-body{display:flex;flex-direction:column;align-items:center;padding:16px 24px 20px;min-height:100dvh;justify-content:space-between}
 .intro-main{display:flex;flex-direction:column;align-items:center}
-.logo-wrap{position:relative;display:flex;flex-direction:column;align-items:center;margin-bottom:14px}
+.logo-wrap{position:relative;display:flex;flex-direction:column;align-items:center;margin-bottom:0px}
+.logo-wrap::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);width:280px;height:280px;border-radius:50%;background:radial-gradient(ellipse,rgba(255,180,0,.22) 0%,rgba(255,100,0,.08) 55%,transparent 75%);pointer-events:none;z-index:-1}
 .intro-bottom{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-width:320px}
 .intro-links{display:flex;align-items:center;gap:6px}
 .intro-link{
@@ -73,7 +74,7 @@ body::before{
 }
 .intro-orynth:active{transform:scale(.96);box-shadow:0 2px 10px rgba(0,0,0,.2)}
 .intro-orynth img{display:block;width:220px;height:auto}
-.logo-emblem{width:200px;height:200px;animation:float 3s ease-in-out infinite;}
+.logo-emblem{width:240px;height:240px;animation:float 3s ease-in-out infinite;mix-blend-mode:screen;filter:brightness(1.08) contrast(1.05);}
 @keyframes float{0%,100%{transform:translateY(0) rotate(-1.2deg)}50%{transform:translateY(-13px) rotate(1.2deg)}}
 .glow-ring{position:absolute;border-radius:50%;border:1.5px solid rgba(255,200,60,.38);animation:ring-pulse 3s ease-in-out infinite;pointer-events:none}
 .glow-ring:nth-child(1){width:220px;height:220px;top:50%;left:50%;transform:translate(-50%,-50%)}
@@ -84,9 +85,9 @@ body::before{
 .t-white{color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.3)}
 .t-gold{background:linear-gradient(135deg,#FFE580 0%,#FF9500 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:900;}
 .logo-tag{margin-top:7px;color:rgba(255,255,255,.7);font-size:12px;font-weight:700;letter-spacing:.25em;text-transform:uppercase}
-.intro-bar-wrap{width:170px;height:4px;background:rgba(255,255,255,.14);border-radius:99px;overflow:hidden;margin-top:28px}
+.intro-bar-wrap{width:160px;height:3px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-top:20px}
 .intro-bar{height:100%;background:linear-gradient(90deg,#FFD23F,#FF8C00);border-radius:99px;width:0%;transition:width .08s linear}
-.intro-skip{margin-top:18px;color:rgba(255,255,255,.35);font-size:12px;font-weight:600;letter-spacing:.12em;cursor:pointer}
+.intro-skip{margin-top:14px;color:rgba(255,255,255,.32);font-size:11px;font-weight:600;letter-spacing:.15em;cursor:pointer;text-transform:uppercase}
 .intro-skip:active{color:rgba(255,255,255,.7)}
 
 /* ================================================================ AUTH */
@@ -500,13 +501,12 @@ body::before{
     <div class="intro-body">
       <div class="intro-main">
       <div class="logo-wrap">
-        <div class="glow-ring"></div><div class="glow-ring"></div><div class="glow-ring"></div>
+
         <div class="logo-emblem">
           <!-- COIN EMBLEM SVG -->
-<img src="logo_nobg.png" alt="TamagoSOL" style="width:200px;height:200px;object-fit:contain">
+<img src="logo_nobg.png" alt="TamagoSOL" style="width:240px;height:240px;object-fit:contain;mix-blend-mode:screen;filter:brightness(1.1) contrast(1.05)">
         </div>
-        <div class="logo-text"><span class="t-white">TAMAGO</span><span class="t-gold">SOL</span></div>
-        <div class="logo-tag">Raise · Stake · Evolve</div>
+
       </div>
       <div class="intro-bar-wrap"><div class="intro-bar" id="intro-bar"></div></div>
       <div class="intro-skip" onclick="skipIntro()">TAP TO SKIP</div>
@@ -532,8 +532,7 @@ body::before{
   <!-- ═══════════════════════════ AUTH ════════════════════════════ -->
   <div class="screen hidden" id="screen-auth">
     <div class="auth-logo-mini">
-      <img src="logo_nobg.png" alt="TamagoSOL" style="width:68px;height:68px;object-fit:contain;filter:drop-shadow(0 2px 10px rgba(0,0,0,.35))">
-      <div class="logo-text"><span class="t-white">TAMAGO</span><span class="t-gold">SOL</span></div>
+      <img src="logo_nobg.png" alt="TamagoSOL" style="width:88px;height:88px;object-fit:contain;mix-blend-mode:screen;filter:brightness(1.1)">
     </div>
     <div class="auth-card">
       <div class="auth-tabs">
